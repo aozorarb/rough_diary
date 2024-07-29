@@ -1,0 +1,22 @@
+PATH
+  remote: .
+  specs:
+    rough_diary (0.1.0)
+
+GEM
+  remote: https://rubygems.org/
+  specs:
+    minitest (5.20.0)
+    rake (13.1.0)
+
+PLATFORMS
+  ruby
+  x86_64-darwin-23
+
+DEPENDENCIES
+  minitest (~> 5.16)
+  rake (~> 13.0)
+  rough_diary!
+
+BUNDLED WITH
+   2.5.10
