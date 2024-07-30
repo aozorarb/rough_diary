@@ -2,7 +2,7 @@ require_relative 'diary_content_generator'
 
 module RoughDiary
   class Writer
-    def init
+    def initialize
       @database = Database.new
       @config = Config.new
     end
@@ -22,7 +22,7 @@ module RoughDiary
     end
 
     
-    def diary_write
+    def write
       raise NotImplementedError
       init
       create_savedata

@@ -46,16 +46,16 @@ RoughDiary	reader.rb	/^module RoughDiary$/;"	m
 RoughDiary	savedata_manager.rb	/^module RoughDiary$/;"	m
 RoughDiary	version.rb	/^module RoughDiary$/;"	m
 RoughDiary	writer.rb	/^module RoughDiary$/;"	m
-Savedatamanager	savedata_manager.rb	/^  module Savedatamanager$/;"	m	module:RoughDiary
+SavedataManager	savedata_manager.rb	/^  class SavedataManager$/;"	c	module:RoughDiary
 VERSION	version.rb	/^  VERSION = "0.1.0"$/;"	C	module:RoughDiary
 Writer	writer.rb	/^  class Writer$/;"	c	module:RoughDiary
 create_savedata	writer.rb	/^    def create_savedata$/;"	f	class:RoughDiary.Writer
 diary_read	reader.rb	/^    def diary_read$/;"	f	class:RoughDiary.Reader
-diary_write	writer.rb	/^    def diary_write$/;"	f	class:RoughDiary.Writer
 generate_diary_content	writer.rb	/^    def generate_diary_content$/;"	f	class:RoughDiary.Writer
-init	writer.rb	/^    def init$/;"	f	class:RoughDiary.Writer
 initialize	core.rb	/^    def initialize$/;"	f	class:RoughDiary.Core
 initialize	diary_content_generator.rb	/^    def initialize$/;"	f	class:RoughDiary.DiaryContentGenerator
+initialize	writer.rb	/^    def initialize$/;"	f	class:RoughDiary.Writer
 main	core.rb	/^    private def main$/;"	f	class:RoughDiary.Core
 register_database	writer.rb	/^    def register_database$/;"	f	class:RoughDiary.Writer
 run	core.rb	/^    def run$/;"	f	class:RoughDiary.Core
+write	writer.rb	/^    def write$/;"	f	class:RoughDiary.Writer
