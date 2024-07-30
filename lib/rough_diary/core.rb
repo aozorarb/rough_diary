@@ -28,12 +28,12 @@ module RoughDiary
       OptionParser.new do |opt|
         opt.banner = "Usage: diary [options]"
 
-        opt.on('-w', '--write') do |v|
-          diary_write
+        opt.on('-w', '--write [TITLE]', 'write diary. If TITLE specified, write named diary') do |v|
+          @writer.write
         end
         
-        opt.on('-r', '--read') do |v|
-          diary_read
+        opt.on('-r', '--read [TITLE]', 'read diary. If TITLE specified, read TITLE diary') do |v|
+          @reader.read
         end
       end.parse!
     end
