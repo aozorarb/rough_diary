@@ -4,15 +4,24 @@
 ---
 content - 2で作成する日記の本文
 id - 一意に特定できる識別子。データベースのやつ?
-date - 日記を書いた日付
-tags - #ではじまるタグを集めたもの
+title - 日記のタイトル。なければデフォルト値
+create_date - 日記を書いた日付。update_dataは作る予定なし。type#fixで対応予定
 type - 日記タイプ。
   - normal - 普通の日記
   - append - 追記
-follow_diary - typeにappendを指定した場合に元の日記のidを指定する。指定しない場合はnil。
+  - fix    - typoとかの修正。gitのrevertみたいな
+follow_diary - typeに[append, fix]を指定した場合に元の日記のidを指定する。指定しない場合はnil。
 ---
 
 2. tmpファイルをエディタで開いて編集してもらう
 3. 2のデータをyamlのcontentに代入する
 4. yamlのデータをデータベースに登録する。
-   データベースの形式はyamlファイルと同じ。
+   データベースの形式は以下の通り。何も説明がなければyamlと同じ
+---
+diary_path - yamlファイルのパスを示す
+id 
+title
+create_date
+type
+follow_diary
+tags - #で始まるタグを集めたもの。
