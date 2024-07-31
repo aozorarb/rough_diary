@@ -3,8 +3,6 @@ require_relative 'diary_content_generator'
 module RoughDiary
   class Writer
     def initialize
-      @database = Database.new
-      @config = Config.new
     end
 
     
