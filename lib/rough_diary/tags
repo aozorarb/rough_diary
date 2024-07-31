@@ -38,7 +38,7 @@ Core	core.rb	/^  class Core$/;"	c	module:RoughDiary
 DatabaseManager	database_manager.rb	/^  class DatabaseManager$/;"	c	module:RoughDiary
 DiaryContentGenerator	diary_content_generator.rb	/^  class DiaryContentGenerator$/;"	c	module:RoughDiary
 EDITOR	config.rb	/^    EDITOR = 'vim'$/;"	C	module:RoughDiary.Config
-InvalidConfigrationError	error.rb	/^  class InvalidConfigrationError ; end$/;"	c	module:RoughDiary
+InvalidConfigrationError	error.rb	/^  class InvalidConfigrationError < Exception ; end$/;"	c	module:RoughDiary
 Reader	reader.rb	/^  class Reader$/;"	c	module:RoughDiary
 RoughDiary	config.rb	/^module RoughDiary$/;"	m
 RoughDiary	core.rb	/^module RoughDiary$/;"	m
@@ -49,19 +49,29 @@ RoughDiary	reader.rb	/^module RoughDiary$/;"	m
 RoughDiary	savedata_manager.rb	/^module RoughDiary$/;"	m
 RoughDiary	version.rb	/^module RoughDiary$/;"	m
 RoughDiary	writer.rb	/^module RoughDiary$/;"	m
+SAVEDATA_DIR	config.rb	/^    SAVEDATA_DIR = '~\/.diary'$/;"	C	module:RoughDiary.Config
 SavedataManager	savedata_manager.rb	/^  class SavedataManager$/;"	c	module:RoughDiary
+VALID_DIARY_TYPE	config.rb	/^    VALID_DIARY_TYPE = {$/;"	C	module:RoughDiary.Config
 VERSION	version.rb	/^  VERSION = "0.1.0"$/;"	C	module:RoughDiary
 Writer	writer.rb	/^  class Writer$/;"	c	module:RoughDiary
+check_data_follow_diray	savedata_manager.rb	/^    private def check_data_follow_diray$/;"	f	class:RoughDiary.SavedataManager
+check_data_validation	savedata_manager.rb	/^    private def check_data_validation$/;"	f	class:RoughDiary.SavedataManager
+check_type	savedata_manager.rb	/^    private def check_type(type)$/;"	f	class:RoughDiary.SavedataManager
+content_data=	savedata_manager.rb	/^    def content_data=(content_data) @data[:content] = content_data end$/;"	f	class:RoughDiary.SavedataManager
 create_savedata	writer.rb	/^    def create_savedata$/;"	f	class:RoughDiary.Writer
 diary_read	reader.rb	/^    def diary_read$/;"	f	class:RoughDiary.Reader
 edit_tempfile	diary_content_generator.rb	/^    private def edit_tempfile$/;"	f	class:RoughDiary.DiaryContentGenerator
+follow_diary_data=	savedata_manager.rb	/^    def follow_diary_data=(follow_diary_data) @data[:follow_diary] = follow_diary_data end$/;"	f	class:RoughDiary.SavedataManager
 generate_diary_content	writer.rb	/^    def generate_diary_content$/;"	f	class:RoughDiary.Writer
+id_data=	savedata_manager.rb	/^    def id_data=(id_data) @data[:id] = id_data end$/;"	f	class:RoughDiary.SavedataManager
 initialize	core.rb	/^    def initialize$/;"	f	class:RoughDiary.Core
 initialize	diary_content_generator.rb	/^    def initialize(savedata_manager)$/;"	f	class:RoughDiary.DiaryContentGenerator
+initialize	savedata_manager.rb	/^    def initialize(title: nil, type: normal)$/;"	f	class:RoughDiary.SavedataManager
 initialize	writer.rb	/^    def initialize$/;"	f	class:RoughDiary.Writer
 main	core.rb	/^    private def main$/;"	f	class:RoughDiary.Core
 register_database	writer.rb	/^    def register_database$/;"	f	class:RoughDiary.Writer
 run	core.rb	/^    def run$/;"	f	class:RoughDiary.Core
 run	diary_content_generator.rb	/^    def run$/;"	f	class:RoughDiary.DiaryContentGenerator
+save	savedata_manager.rb	/^    def save$/;"	f	class:RoughDiary.SavedataManager
 valid_editor?	diary_content_generator.rb	/^    private def valid_editor?(editor)$/;"	f	class:RoughDiary.DiaryContentGenerator
 write	writer.rb	/^    def write$/;"	f	class:RoughDiary.Writer
