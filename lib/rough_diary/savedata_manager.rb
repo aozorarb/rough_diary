@@ -2,7 +2,7 @@ require 'yaml/store'
 
 module RoughDiary
   class SavedataManager
-    def initialize(title: nil, type: normal)
+    def initialize(title: nil, type: :normal)
       title ||= RoughDiary::Config::DEFAULT_DIARY_TITLE
 
       @data = {}
