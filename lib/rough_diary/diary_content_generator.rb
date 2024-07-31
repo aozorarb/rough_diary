@@ -1,3 +1,4 @@
+require_relative 'config'
 require_relative 'error'
 
 
@@ -5,29 +6,31 @@ module RoughDiary
   class DiaryContentGenerator
     def initialize(savedata_manager)
       @savedata_manager = savedata_manager
-      @tempfile = Tempfile.create('diary')
+      @tempfile = Tempfile.create('diary', mode: 666)
     end
 
     
     private def valid_editor?(editor)
-      return false if editor.nil?
       # Is editor available on shell?
-      return false if system("which #{editor} 2>&1 > /dev/null")
-
-      true
+      if editor.nil? ||
+          !system("which #{editor} 2>&1 > /dev/null")
+        false
+      else
+        true
+      end
     end
 
 
     private def edit_tempfile
-      raise InvalidConfigration unless valid_editor?(RoughDiary::EDITOR)
+      raise RoughDiary::InvalidConfigrationError, 'Please configure editor' unless valid_editor?(RoughDiary::Config::EDITOR)
 
-      `#{@editor} #{@tempfile.path}`
+      system("#{@editor} #{@tempfile.path}")
     end
 
 
     def run
       edit_tempfile
-      puts @tempfile.read
+      savedata_manager.content_data = @tempfile.read
     end
 
 

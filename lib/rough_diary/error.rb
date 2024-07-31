@@ -1,4 +1,4 @@
 module RoughDiary
-  class InvalidConfigrationError ; end
+  class InvalidConfigrationError < Exception ; end
 end
 
