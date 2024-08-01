@@ -18,10 +18,10 @@ follow_diary - typeに[append, fix]を指定した場合に元の日記のidを�
 4. yamlのデータをデータベースに登録する。
    データベースの形式は以下の通り。何も説明がなければyamlと同じ
 ---
-diary_path - yamlファイルのパスを示す
 id 
+diary_path - yamlファイルのパスを示す
 title
 create_date
 type
 follow_diary
-tags - #で始まるタグを集めたもの。
+tags - #で始まるタグを集めたもの。上のデータベースからは独立させてidで繋げる
