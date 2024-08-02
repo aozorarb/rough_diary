@@ -2,6 +2,6 @@
 
 require "test_helper"
 
-class TestRoughDiary < Minitest::Test
+class TestWriter < Minitest::Test
 
 end

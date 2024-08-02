@@ -1,6 +1,6 @@
 require_relative 'test_helper'
 
-class RoughDiary::Config::Test < Minitest::Test
+class TestConfig < Minitest::Test
   include RoughDiary::Config
 
   def test_constants_not_nil
