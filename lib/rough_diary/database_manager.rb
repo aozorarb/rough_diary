@@ -1,17 +1,23 @@
 require 'sqlite3'
+require 'fileutils'
 
 module RoughDiary
   class DatabaseManager
-    def initialize(file_name)
-      @database = SQLite3::Database.new(file_name)
+    def initialize(file_path)
+      unless File.exist?(file_path)
+        FileUtils.mkdir_p(File.dirname(file_path))
+        FileUtils.touch(file_path)
+      end
+
+      @database = SQLite3::Database.new(file_path)
       create_database_if_not_exist
 
-      ObjectSpace.define_finalizer(self, self.finalize(@database))
+      ObjectSpace.define_finalizer(self, DatabaseManager.finalize(@database))
     end
 
 
     def self.finalize(database)
-      proc { database.&close }
+      proc { database&.close }
     end
 
 
