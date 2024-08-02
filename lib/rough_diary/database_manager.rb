@@ -93,7 +93,9 @@ module RoughDiary
       VALUES
         (?, ?)
       SQL
-      tags = RoughDiary::TagCollector.collect(@savedata_manager)
+      tag_collector = RoughDiary::TagCollector.new(@stage_manager)
+      tags = tag_collector.collect
+
       tags.each do |tag|
         @database.execute sql, [
           @savedata_manager.get(:id),
