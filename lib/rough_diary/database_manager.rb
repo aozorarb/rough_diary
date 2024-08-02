@@ -45,6 +45,68 @@ module RoughDiary
       SQL
     end
 
+
+
+    def savedata_manager=(manager) @savedata_manager ||= manager end
+
+
+    def register
+      @database.transaction do
+        insert_diary_entries
+        set_savedata_id_data
+        insert_diary_tags
+      end
+    end
+
+
+    private def check_savedata_manager
+      raise RoughDiary::InstanceVariableNilError,
+        "Please set @savedata_manager"
+    end
+
+
+    private def insert_diary_entries
+      check_savedata_manager
+      sql = <<~SQL
+        INSERT INTO diary_entries (
+          diary_path, title, create_date, type, follow_diary
+        ) VALUES (
+          ?, ?, ?, ?, ?
+        )
+      SQL
+
+      @database.execute sql, [
+        @savedata_manager.file_path,
+        @savedata_manager.get(:title),
+        @savedata_manager.get(:create_date),
+        @savedata_manager.get(:type),
+        @savedata_manager.get(:follow_diary)
+      ]
+    end
+
+
+    private def insert_diary_tags(id)
+      check_savedata_manager
+      sql = <<~SQL
+      INSERT INTO diary_tags
+        (id, tag)
+      VALUES
+        (?, ?)
+      SQL
+      tags = RoughDiary::TagCollector.collect(@savedata_manager)
+      tags.each do |tag|
+        @database.execute sql, [
+          @savedata_manager.get(:id),
+          tag
+      ]
+    end
+
+
+    private def set_savedata_id_data_last_inserted
+      check_savedata_manager
+      @savedata_manager.id_data = @database_manager.last_insert_row_id
+    end
+
   end
 end
 
