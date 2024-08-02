@@ -14,6 +14,13 @@ module RoughDiary
       @data[:follow_diary] = nil
     end
 
+
+    def get(key)
+      if @data[key]
+        @data[key]
+      else
+        raise AruguementError, 'Invalid key for savedata'
+    end
     
     def content_data=(content_data) @data[:content] = content_data end
     def follow_diary_data=(follow_diary_data) @data[:follow_diary] = follow_diary_data end
@@ -47,8 +54,9 @@ module RoughDiary
 
     def save
       check_data_validation
-      file_path = "#{RoughDiary::Config::SAVEDATA_DIR}/#{Time.now.strftime('%Y%m%d%H%M%S')}"
-      store = YAML::Store.new(file_path)
+      @file_path = "#{RoughDiary::Config::SAVEDATA_DIR}/#{Time.now.strftime('%Y%m%d%H%M%S')}"
+
+      store = YAML::Store.new(@file_path)
 
       # Keep this saving method for redundancy, don't refactor to use @data.each
       store.transaction do
@@ -59,6 +67,8 @@ module RoughDiary
         store['follow_diary'] = @date[:follow_diary]
       end
     end
+
+    attr_reader :file_path
 
   end
 end
