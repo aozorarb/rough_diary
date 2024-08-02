@@ -20,8 +20,10 @@ module RoughDiary
         @data[key]
       else
         raise AruguementError, 'Invalid key for savedata'
+      end
     end
     
+
     def content_data=(content_data) @data[:content] = content_data end
     def follow_diary_data=(follow_diary_data) @data[:follow_diary] = follow_diary_data end
     def id_data=(id_data) @data[:id] = id_data end

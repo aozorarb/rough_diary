@@ -101,6 +101,7 @@ module RoughDiary
           @savedata_manager.get(:id),
           tag
       ]
+      end
     end
 
 
