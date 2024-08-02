@@ -14,7 +14,7 @@ module RoughDiary
     def initialize
       @writer = RoughDiary::Writer.new
       @reader = RoughDiary::Reader.new
-      @database_manager = RoughDiary::DatabaseManager.new
+      @database_manager = RoughDiary::DatabaseManager.new(RoughDiary::Config::DATABASE_PATH)
       @savedata_manager = RoughDiary::SavedataManager.new
     end
 
