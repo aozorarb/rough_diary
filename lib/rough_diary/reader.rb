@@ -1,6 +1,6 @@
 module RoughDiary
   class Reader
-    def diary_read
+    def read
       # raise NotImplementedError
     end
   end

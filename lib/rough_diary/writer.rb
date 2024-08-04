@@ -22,10 +22,9 @@ module RoughDiary
     
     def write
       raise NotImplementedError
-      init
       create_savedata
       generate_diary_content
-      regist_database
+      register_database
     end
   end
 end

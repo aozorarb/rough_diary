@@ -4,6 +4,8 @@ require 'fileutils'
 module RoughDiary
   class DatabaseManager
     def initialize(file_path)
+      file_path = File.expand_path(file_path)
+
       unless File.exist?(file_path)
         FileUtils.mkdir_p(File.dirname(file_path))
         FileUtils.touch(file_path)
