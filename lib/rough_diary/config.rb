@@ -9,14 +9,14 @@ module RoughDiary
     DATABASE_PATH = '~/.diary/database.sqlite3'
 
     VALID_DIARY_TYPE = {
-      normal: :normal,
-      append: :append,
-      fix:    :fix
+      normal: true
+      append: true
+      fix:    true
     }
 
     NEED_FOLLOW_DIARY_TYPE = {
-      append: :append,
-      fix:    :fix
+      append: true
+      fix:    true
     }
   end
 end
