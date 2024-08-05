@@ -19,7 +19,7 @@ module RoughDiary
       if @data[key]
         @data[key]
       else
-        raise AruguementError, 'Invalid key for savedata'
+        raise ArgumentError, "Invalid key for savedata: #{key}"
       end
     end
     
