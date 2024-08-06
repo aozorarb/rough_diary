@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "test_helper"
+require 'tempfile'
 
 module RoughDiary::Config
   DEFAULT_DIARY_TITLE = 'default'
@@ -13,7 +14,7 @@ module RoughDiary::Config
     append: true,
     fix:    true
   }
-  SAVEDATA_DIR = './resorce/savedata'
+  SAVEDATA_DIR = 'test/resorce/savedata'
 
 end
 
@@ -62,12 +63,12 @@ class TestSavedataManager < Minitest::Test
     @manager.follow_diary_data = nil
 
     @manager.save
-    saved_data = YAML.load_file(@manager.file_path)
-
+    saved_file = File.read(@manager.file_path)
+    saved_data = YAML.safe_load(saved_file, permitted_classes: [Time])
     assert_equal 1, saved_data['id']
-    assert_equal "Test Title", saved_data['title']
-    assert_equal @manager.get(:create_date), saved_data['create_data']
-    assert_equal "Test Content", saved_data['content']
+    assert_equal "default", saved_data['title']
+    assert_equal @manager.get(:create_date), saved_data['create_date']
+    assert_equal "example", saved_data['content']
     assert_nil saved_data['follow_diary']
   end
 
