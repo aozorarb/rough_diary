@@ -23,7 +23,7 @@ module RoughDiary
     end
 
 
-    def create_database_if_not_exist
+    private def create_database_if_not_exist
       # mainly database
       @database.execute <<~SQL
         CREATE TABLE IF NOT EXISTS diary_entries (
