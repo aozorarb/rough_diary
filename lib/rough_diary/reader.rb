@@ -1,7 +1,12 @@
 module RoughDiary
   class Reader
+    def initialize(database_manager)
+      @database_manager = database_manager
+    end
+
+
     def read
-      # raise NotImplementedError
+      # none
     end
   end
 end

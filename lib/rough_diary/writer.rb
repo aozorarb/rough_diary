@@ -11,12 +11,12 @@ module RoughDiary
     end
 
     
-    def generate_diary_content
+    private def generate_diary_content
       @content_generator.run
     end
 
     
-    def register_database
+    private def register_database
       @database_manager.savedata_manager = @savedata_manager
       @database_manager.register
     end

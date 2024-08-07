@@ -10,15 +10,15 @@ require_relative 'reader'
 
 module RoughDiary
   class Core
-    
+    include RoughDiary
+
     def initialize
-      @writer = RoughDiary::Writer.new
-      @reader = RoughDiary::Reader.new
-      @database_manager = RoughDiary::DatabaseManager.new(RoughDiary::Config::DATABASE_PATH)
-      @savedata_manager = RoughDiary::SavedataManager.new
+      @database_manager = DatabaseManager.new(RoughDiary::Config::DATABASE_PATH)
+      @writer = Writer.new(@database_manager)
+      @reader = Reader.new(@database_manager)
     end
 
-
+    
     def run
       main
     end
