@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require "test_helper"
-require 'tempfile'
+require 'tmpdir'
 
 module RoughDiary::Config
   DEFAULT_DIARY_TITLE = 'default'
@@ -14,7 +14,7 @@ module RoughDiary::Config
     append: true,
     fix:    true
   }
-  SAVEDATA_DIR = 'test/resorce/savedata'
+  SAVEDATA_DIR = Dir.mktmpdir
 
 end
 
