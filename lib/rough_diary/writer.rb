@@ -2,27 +2,27 @@ require_relative 'diary_content_generator'
 
 module RoughDiary
   class Writer
-    def initialize
-    end
-
+    include RoughDiary
     
-    def create_savedata
+    def initialize(database_manager)
+      @database_manager = database_manager
+      @savedata_manager = SavedataManager.new
+      @content_generator = DiaryContentGenerator.new(@savedata_manager)
     end
 
     
     def generate_diary_content
-
+      @content_generator.run
     end
 
     
     def register_database
-
+      @database_manager.savedata_manager = @savedata_manager
+      @database_manager.register
     end
 
     
     def write
-      raise NotImplementedError
-      create_savedata
       generate_diary_content
       register_database
     end
