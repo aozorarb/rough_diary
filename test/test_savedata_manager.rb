@@ -2,22 +2,7 @@
 
 require "test_helper"
 require 'tmpdir'
-
-module RoughDiary::Config
-  DEFAULT_DIARY_TITLE = 'default'
-  VALID_DIARY_TYPE = {
-    normal: true,
-    append: true,
-    fix:    true
-  }
-  NEED_FOLLOW_DIARY_TYPE = {
-    append: true,
-    fix:    true
-  }
-  SAVEDATA_DIR = Dir.mktmpdir
-
-end
-
+require_relative 'test_helper_config_define'
 
 
 class TestSavedataManager < Minitest::Test
