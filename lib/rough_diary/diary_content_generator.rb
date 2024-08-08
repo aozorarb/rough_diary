@@ -21,8 +21,8 @@ module RoughDiary
     end
 
 
-    private def edit_tempfile
-      raise RoughDiary::InvalidConfigrationError, 'Please configure editor' unless valid_editor?(RoughDiary::Config::EDITOR)
+    private def edit_tempfile(editor: Roughd::Config::EDITOR)
+      raise RoughDiary::InvalidConfigrationError, 'Please configure editor' unless valid_editor?(editor)
 
       system("#{@editor} #{@tempfile.path}")
     end
@@ -30,7 +30,7 @@ module RoughDiary
 
     def run
       edit_tempfile
-      savedata_manager.content_data = @tempfile.read
+      @savedata_manager.content_data = @tempfile.read
     end
 
 
