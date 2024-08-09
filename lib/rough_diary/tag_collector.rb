@@ -1,13 +1,13 @@
 module RoughDiary
   class TagCollector
-    def initialize(stage_manager)
-      @stage_manager = stage_manager
+    def initialize(savedata_manager)
+      @savedata_manager = savedata_manager
     end
 
 
     def collect
       @tags = []
-      File.foreach(@stage_manager.get(:file_path)) do |line|
+      File.foreach(@savedata_manager.get(:file_path)) do |line|
         @tags << line.scan(/#\w+/)
       end
       @tags

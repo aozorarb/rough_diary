@@ -1,5 +1,6 @@
 require_relative 'config'
 require_relative 'error'
+require 'tempfile'
 
 
 module RoughDiary
@@ -21,7 +22,7 @@ module RoughDiary
     end
 
 
-    private def edit_tempfile(editor: Roughd::Config::EDITOR)
+    private def edit_tempfile(editor: RoughDiary::Config::EDITOR)
       raise RoughDiary::InvalidConfigrationError, 'Please configure editor' unless valid_editor?(editor)
 
       system("#{@editor} #{@tempfile.path}")
