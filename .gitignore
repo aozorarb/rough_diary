@@ -6,5 +6,5 @@
 /pkg/
 /spec/reports/
 /tmp/
+/bin/test.db
 *tags
-/test/resorce/*
