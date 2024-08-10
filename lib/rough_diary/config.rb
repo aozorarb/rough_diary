@@ -2,11 +2,11 @@ module RoughDiary
   module Config
     EDITOR = 'vim'
 
-    SAVEDATA_DIR = '~/.diary/article'
+    SAVEDATA_DIR = File.expand_path('~/.diary/article')
 
     DEFAULT_DIARY_TITLE = 'note'
 
-    DATABASE_PATH = '~/.diary/database.sqlite3'
+    DATABASE_PATH = File.expand_path('~/.diary/database.sqlite3')
 
     VALID_DIARY_TYPE = {
       normal: true,

@@ -4,10 +4,10 @@ require 'fileutils'
 module RoughDiary
   class DatabaseManager
     def initialize(file_path)
-      file_path = File.expand_path(file_path)
+      file_path = file_path
 
       unless File.exist?(file_path)
-        FileUtils.mkdir_p(File.dirname(file_path))
+        FileUtils.mkpath(File.dirname(file_path))
         FileUtils.touch(file_path)
       end
 
@@ -30,7 +30,7 @@ module RoughDiary
           id INTEGER PRIMARY KEY,
           diary_path TEXT,
           title TEXT,
-          create_data TEXT
+          create_date TEXT,
           type TEXT,
           follow_diary INTEGER
         );
@@ -55,21 +55,23 @@ module RoughDiary
 
 
 
-    def savedata_manager=(manager) @savedata_manager ||= manager end
+    def savedata_manager=(manager) @savedata_manager = manager end
 
 
     def register
       @database.transaction do
         insert_diary_entries
-        set_savedata_id_data
+        set_savedata_id_data_last_inserted
         insert_diary_tags
       end
     end
 
 
     private def check_savedata_manager
-      raise RoughDiary::InstanceVariableNilError,
-        "Please set @savedata_manager"
+      unless @savedata_manager
+        raise RoughDiary::InstanceVariableNilError,
+        "Please set @savedata_manager" unless @savedata_manager
+      end
     end
 
 
@@ -83,17 +85,19 @@ module RoughDiary
         )
       SQL
 
+      data = @savedata_manager.database_format
+
       @database.execute sql, [
         @savedata_manager.file_path,
-        @savedata_manager.get(:title),
-        @savedata_manager.get(:create_date),
-        @savedata_manager.get(:type),
-        @savedata_manager.get(:follow_diary)
+        data.title,
+        data.create_date,
+        data.type,
+        data.follow_diary
       ]
     end
 
 
-    private def insert_diary_tags(id)
+    private def insert_diary_tags
       check_savedata_manager
       sql = <<~SQL
       INSERT INTO diary_tags
@@ -101,21 +105,22 @@ module RoughDiary
       VALUES
         (?, ?)
       SQL
-      tag_collector = RoughDiary::TagCollector.new(@stage_manager)
+
+      tag_collector = RoughDiary::TagCollector.new(@savedata_manager)
       tags = tag_collector.collect
 
       tags.each do |tag|
         @database.execute sql, [
           @savedata_manager.get(:id),
           tag
-      ]
+        ]
       end
     end
 
 
     private def set_savedata_id_data_last_inserted
       check_savedata_manager
-      @savedata_manager.id_data = @database_manager.last_insert_row_id
+      @savedata_manager.id_data = @database.last_insert_row_id
     end
 
   end
