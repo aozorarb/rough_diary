@@ -8,6 +8,7 @@ module RoughDiary
     def initialize(savedata_manager)
       @savedata_manager = savedata_manager
       @tempfile = Tempfile.create('diary', mode: 666)
+      @tempfile.close
     end
 
     
@@ -23,14 +24,16 @@ module RoughDiary
 
 
     private def edit_tempfile(editor: RoughDiary::Config::EDITOR)
-      raise RoughDiary::InvalidConfigrationError, 'Please configure editor' unless valid_editor?(editor)
+      raise RoughDiary::InvalidConfigrationError,
+        'Please configure editor' unless valid_editor?(editor)
 
-      system("#{@editor} #{@tempfile.path}")
+      system("#{editor} #{@tempfile.path}")
     end
 
 
     def run
       edit_tempfile
+      @tempfile.reopen(@tempfile.path, 'r')
       @savedata_manager.content_data = @tempfile.read
     end
 
