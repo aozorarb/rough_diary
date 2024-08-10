@@ -37,7 +37,7 @@ module RoughDiary
         false
       end
     end
-
+    
     private def check_data_follow_diray
       need_type = RoughDiary::Config::NEED_FOLLOW_DIARY_TYPE
       if !need_type.key?([@data[:type]]) || @data[:follow_diary]
@@ -53,9 +53,23 @@ module RoughDiary
     end
 
 
-    def save
+    private def make_file_path
+      FileUtils.mkpath(RoughDiary::Config::SAVEDATA_DIR)
+    end 
+
+
+    def create_savefile_path
       check_data_validation
-      @file_path = "#{RoughDiary::Config::SAVEDATA_DIR}/#{Time.now.strftime('%Y%m%d%H%M%S')}.yml"
+      make_file_path
+      # FIXME: delete TEST_ keyword when project complete
+      @file_path = "#{RoughDiary::Config::SAVEDATA_DIR}/TEST_#{Time.now.strftime('%Y%m%d%H%M%S')}.yml"
+
+      @called_create_savefile = true
+    end
+
+
+    def save
+      raise 'First, exec SavedataManager#create_savefile' unless @called_create_savefile
 
       store = YAML::Store.new(@file_path)
       
@@ -67,9 +81,25 @@ module RoughDiary
         store['content'] = @data[:content]
         store['follow_diary'] = @data[:follow_diary]
       end
+
     end
 
     attr_reader :file_path
+
+
+    def database_format
+      formated_savedata = Data.define(
+        :title, :create_date, :type, :follow_diary
+      )
+
+      return_savedata = formated_savedata.new(
+        title: @data[:title].to_s,
+        create_date: @data[:create_date].getutc.strftime('%Y-%m-%d %H:%M:%S'),
+        type: @data[:type].to_s,
+        follow_diary: @data[:follow_diary].to_s
+      )
+      return_savedata
+    end
 
   end
 end
