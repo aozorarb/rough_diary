@@ -6,11 +6,7 @@ module RoughDiary
 
 
     def collect
-      @tags = []
-      File.foreach(@savedata_manager.get(:file_path)) do |line|
-        @tags << line.scan(/#\w+/)
-      end
-      @tags
+      @tags = @savedata_manager.get(:content).scan(/#\w+/)
     end
 
   end
