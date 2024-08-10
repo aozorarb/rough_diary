@@ -9,6 +9,7 @@ gem "rake", "~> 13.0"
 
 gem "minitest", "~> 5.20"
 
+gem 'debug', '~> 1.9.1'
 gem 'sqlite3', '~> 2.0.1'
 
 gem 'mutex_m', '~> 0.2.0'

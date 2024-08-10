@@ -8,6 +8,7 @@ require "rough_diary"
 # with your gem easier. You can also use a different console, if you like.
 
 require "irb"
+require 'debug'
 require_relative 'helper/test_writer.rb'
 setup
 #IRB.start(__FILE__)
