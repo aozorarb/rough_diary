@@ -2,8 +2,9 @@ require 'yaml/store'
 
 module RoughDiary
   class SavedataManager
-    def initialize(title: nil, type: :normal)
+    def initialize(savedata_dir, title: nil, type: :normal)
       title ||= RoughDiary::Config::DEFAULT_DIARY_TITLE
+      @savedata_dir = savedata_dir
 
       @data = {}
       @data[:title] = title
@@ -54,7 +55,7 @@ module RoughDiary
 
 
     private def make_file_path
-      FileUtils.mkpath(RoughDiary::Config::SAVEDATA_DIR)
+      FileUtils.mkpath(@savedata_dir)
     end 
 
 
@@ -62,7 +63,7 @@ module RoughDiary
       check_data_validation
       make_file_path
       # FIXME: delete TEST_ keyword when project complete
-      @file_path = "#{RoughDiary::Config::SAVEDATA_DIR}/TEST_#{Time.now.strftime('%Y%m%d%H%M%S')}.yml"
+      @file_path = "#{@savedata_dir}/TEST_#{Time.now.strftime('%Y%m%d%H%M%S')}.yml"
 
       @called_create_savefile = true
     end
