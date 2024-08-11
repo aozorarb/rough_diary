@@ -6,6 +6,7 @@ class TestDiaryContentGenerator < Minitest::Test
   def setup
     @mock_savedata_manager = Minitest::Mock.new
     @mock_tempfile = Minitest::Mock.new
+    @mock_tempfile.expect :close, true
 
     Tempfile.stub :create, @mock_tempfile do
       @generator = RoughDiary::DiaryContentGenerator.new(@mock_savedata_manager)
@@ -16,6 +17,8 @@ class TestDiaryContentGenerator < Minitest::Test
 
   def test_run
     @mock_tempfile.expect :read, 'mock diary content'
+    @mock_tempfile.expect :reopen, true, ['path/to', 'r']
+    @mock_tempfile.expect :path, 'path/to'
     @mock_savedata_manager.expect :content_data=, nil, ['mock diary content']
 
     @generator.stub :edit_tempfile, nil do

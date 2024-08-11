@@ -7,7 +7,7 @@ require_relative 'test_helper_config_define'
 
 class TestSavedataManager < Minitest::Test
   def setup
-    @manager = RoughDiary::SavedataManager.new
+    @manager = RoughDiary::SavedataManager.new(RoughDiary::Config::SAVEDATA_DIR)
   end
 
 
@@ -42,12 +42,25 @@ class TestSavedataManager < Minitest::Test
   end
 
 
+  def test_create_savefile_path
+    @manager.create_savefile_path
+    save_dir = @manager.instance_variable_get(:@savedata_dir)
+    file_path = @manager.instance_variable_get(:@file_path)
+    assert_match %r(#{save_dir}\/.+\.yml), file_path
+    assert_equal true, @manager.instance_variable_get(:@called_create_savefile)
+  end
+
+
   def test_save
+    assert_raises(ScriptError) { @manager.save }
+
     @manager.id_data = 1
     @manager.content_data = 'example'
     @manager.follow_diary_data = nil
 
+    @manager.create_savefile_path
     @manager.save
+
     saved_file = File.read(@manager.file_path)
     saved_data = YAML.safe_load(saved_file, permitted_classes: [Time])
     assert_equal 1, saved_data['id']
