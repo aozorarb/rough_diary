@@ -69,7 +69,7 @@ module RoughDiary
 
 
     def save
-      raise 'First, exec SavedataManager#create_savefile' unless @called_create_savefile
+      raise ScriptError, 'First, exec SavedataManager#create_savefile' unless @called_create_savefile
 
       store = YAML::Store.new(@file_path)
       

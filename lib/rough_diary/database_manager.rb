@@ -11,6 +11,7 @@ module RoughDiary
       end
 
       @database = SQLite3::Database.new(file_path)
+      @database.results_as_hash = true
       create_database_if_not_exist
 
       ObjectSpace.define_finalizer(self, DatabaseManager.finalize(@database))
@@ -76,7 +77,6 @@ module RoughDiary
 
 
     private def insert_diary_entries
-      binding.break
       check_savedata_manager
       sql = <<~SQL
         INSERT INTO diary_entries (
