@@ -4,7 +4,6 @@ require 'fileutils'
 module RoughDiary
   class DatabaseManager
     def initialize(file_path)
-      file_path = file_path
 
       unless File.exist?(file_path)
         FileUtils.mkpath(File.dirname(file_path))
@@ -51,6 +50,7 @@ module RoughDiary
       @database.execute <<~SQL
         CREATE INDEX IF NOT EXISTS idx_tags ON diary_tags (tag);
       SQL
+      @database
     end
 
 
@@ -76,6 +76,7 @@ module RoughDiary
 
 
     private def insert_diary_entries
+      binding.break
       check_savedata_manager
       sql = <<~SQL
         INSERT INTO diary_entries (
@@ -94,6 +95,7 @@ module RoughDiary
         data.type,
         data.follow_diary
       ]
+      @database
     end
 
 
@@ -115,6 +117,7 @@ module RoughDiary
           tag
         ]
       end
+      @database
     end
 
 

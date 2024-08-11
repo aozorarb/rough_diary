@@ -18,6 +18,7 @@ module RoughDiary
       @savedata_manager.create_savefile_path
       @database_manager.register
       @savedata_manager.save
+      true
     end
   end
 end

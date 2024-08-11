@@ -45,7 +45,6 @@ module RoughDiary
         true
       else
         raise TypeError, 'Invalid follow_diary'
-        false
       end
     end
 
@@ -82,7 +81,7 @@ module RoughDiary
         store['content'] = @data[:content]
         store['follow_diary'] = @data[:follow_diary]
       end
-
+      @data
     end
 
     attr_reader :file_path
