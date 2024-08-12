@@ -2,7 +2,7 @@
 
 require "test_helper"
 require 'tmpdir'
-require_relative 'test_helper_config_define'
+require_relative 'helper/config_define'
 
 
 class TestSavedataManager < Minitest::Test
