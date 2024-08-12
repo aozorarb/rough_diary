@@ -2,12 +2,11 @@ require 'yaml/store'
 
 module RoughDiary
   class SavedataManager
-    def initialize(savedata_dir, title: nil, type: :normal)
-      title ||= RoughDiary::Config::DEFAULT_DIARY_TITLE
+    def initialize(savedata_dir, type: :normal)
       @savedata_dir = savedata_dir
 
       @data = {}
-      @data[:title] = title
+      @data[:title] = RoughDiary::Config::DEFAULT_DIARY_TITLE
       @data[:create_date] = Time.now
       @data[:type] = type if check_data_type(type.to_sym)
       @data[:content] = nil
@@ -25,9 +24,10 @@ module RoughDiary
     end
     
 
-    def content_data=(content_data) @data[:content] = content_data end
-    def follow_diary_data=(follow_diary_data) @data[:follow_diary] = follow_diary_data end
-    def id_data=(id_data) @data[:id] = id_data end
+    def content_data=(content) @data[:content] = content end
+    def follow_diary_data=(follow_diary) @data[:follow_diary] = follow_diary end
+    def id_data=(id) @data[:id] = id end
+    def title_data=(title) @data[:title] = title end
 
 
     private def check_data_type(type)

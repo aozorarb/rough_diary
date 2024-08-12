@@ -31,8 +31,21 @@ module RoughDiary
     end
 
 
+    private def ask_diary_title
+      puts "Please enter diary title (if none, title will be '#{RoughDiary::Config::DEFAULT_DIARY_TITLE}')"
+
+      print 'Diary title: '
+      input_title = gets.chomp
+
+      unless input_title.empty?
+        @savedata_manager.title_data = input_title
+      end
+    end
+
+
     def run
       edit_tempfile
+      ask_diary_title
       @tempfile.reopen(@tempfile.path, 'r')
       @savedata_manager.content_data = @tempfile.read
     end
