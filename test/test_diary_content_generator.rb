@@ -22,11 +22,46 @@ class TestDiaryContentGenerator < Minitest::Test
     @mock_savedata_manager.expect :content_data=, nil, ['mock diary content']
 
     @generator.stub :edit_tempfile, nil do
-      @generator.run
+      @generator.stub :ask_diary_title, true do
+        @generator.run
+      end
     end
 
     @mock_tempfile.verify
     @mock_savedata_manager.verify
+  end
+
+
+  def suppress_output
+    stdout = $stdout
+    $stdout = File.open(File::NULL, 'w')
+    yield
+  ensure
+    $stdout = stdout
+  end
+
+
+  def test_ask_diary_title
+    suppress_output do
+      @mock_savedata_manager.expect :title_data=, nil, ['test title']
+
+      @generator.stub :gets, "test title\n" do
+        @generator.send(:ask_diary_title)
+      end
+
+      @mock_savedata_manager.verify
+    end
+  end
+
+
+  def test_ask_diary_title_is_none
+    suppress_output do
+      @generator.stub :gets, "\n" do
+        @generator.send(:ask_diary_title)
+      end
+
+      @mock_savedata_manager.verify
+    end
   end
 
 
