@@ -1,0 +1,11 @@
+1. 日記のIDを受け取る（UI部分は担わない）
+2. そのIDの日記とIDがfollow_diaryに入ってる日記のパスを集める
+3. 2で集めた日記を統合して一時ファイルに書き込む
+4. ページャーに一時ファイルを表示してもらう
+
+=== 必要なクラス（予測）
+Reader
+DatabaseManager
+UnionDiary
+PagerHolder
+
