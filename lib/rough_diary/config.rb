@@ -10,12 +10,10 @@ module RoughDiary
 
     VALID_DIARY_TYPE = {
       normal: true,
-      append: true,
       fix:    true,
     }
 
     NEED_FOLLOW_DIARY_TYPE = {
-      append: true,
       fix:    true,
     }
   end
