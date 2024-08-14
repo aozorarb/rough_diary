@@ -5,7 +5,7 @@ module RoughDiary
     include RoughDiary
     
     def initialize(database_manager, savedata: nil)
-      @savedata_manager = savedata || SavedataManager.new(RoughDiary::Config::SAVEDATA_DIR)
+      @savedata_manager = savedata || SavedataManager::Normal.new(RoughDiary::Config::SAVEDATA_DIR)
       @database_manager = database_manager
       @content_generator = DiaryContentGenerator.new(@savedata_manager)
 
