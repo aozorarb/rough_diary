@@ -33,7 +33,7 @@ module RoughDiary
       end
 
 
-      private def set_savedata_id_data_last_inserted
+      private def set_data_id_last_inserted
         check_data_holder
         @data_holder.id_data = @database.last_insert_row_id
       end
@@ -78,16 +78,17 @@ module RoughDiary
 
 
       def register
+        check_data_holder
+
         @database.transaction do
           insert_diary_entries
-          set_savedata_id_data_last_inserted
+          set_data_id_last_inserted
           insert_diary_tags
         end
       end
 
 
       private def insert_diary_entries
-        check_data_holder
         sql = <<~SQL
           INSERT INTO diary_entries (
             create_date, title, content
@@ -99,17 +100,15 @@ module RoughDiary
         data = @data_holder.database_format
 
         @database.execute sql, [
-          @data_holder.file_path,
           data.create_date,
           data.title,
-          data.follow_diary
+          data.content
         ]
         @database
       end
 
 
       private def insert_diary_tags
-        check_data_holder
         sql = <<~SQL
         INSERT INTO diary_tags
           (id, tag)
@@ -138,15 +137,40 @@ module RoughDiary
         @database.execute <<~SQL
           CREATE TABLE IF NOT EXISTS diary_fixies (
             id INTEGER PRIMARY KEY,  
-            
+            create_date TEXT,
+            fix_diary_id INTEGER,
+            edit_content TEXT
           );
-        SQL 
+        SQL
+      end
+
+
+      private def insert_diary_fixies
+        sql = <<~SQL
+          INSERT INTO diary_fixies (
+            create_date, fix_diary_id, edit_content
+          )
+        SQL
+
+        data = @data_holder.database_format
+
+        @database.execute sql, [
+          data.create_date,
+          data.fix_diary_id,
+          data.edit_content
+        ]
+        @database
       end
 
 
       def register
+        check_data_holder
+        @database.transaction do
+          insert_diary_fixies
+          set_data_id_last_inserted
+        end
       end
-    
     end
+
   end
 end

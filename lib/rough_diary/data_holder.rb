@@ -66,10 +66,10 @@ module RoughDiary
 
 
     class Fix < Base
-      def data_assign(follow_diary)
+      def data_assign(fix_diary_id)
         @data[:id]            = nil
         @data[:create_date]   = Time.now
-        @data[:follow_diary]  = follow_diary
+        @data[:fix_diary_id]  = fix_diary_id
         @data[:edit_content]  = nil
       end
 
@@ -79,12 +79,12 @@ module RoughDiary
 
       def database_format
         formated_savedata = Data.define(
-          :create_date, :follow_diary, :edit_content
+          :create_date, :fix_diary_id, :edit_content
         )
 
         return_savedata = formated_savedata.new(
           create_date:  @data[:create_date].getutc.strftime('%Y-%m-%d %H:%M:%S'),
-          follow_diary: @data[:follow_diary].to_i
+          fix_diary_id: @data[:fix_diary_id].to_i
           edit_content: @data[:edit_content].to_s
         )
         return_savedata
