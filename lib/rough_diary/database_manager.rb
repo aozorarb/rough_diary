@@ -22,6 +22,7 @@ module RoughDiary
         proc { database&.close }
       end
 
+
       def data_holder=(val) @data_holder = val end
 
 
@@ -39,8 +40,8 @@ module RoughDiary
       end
 
 
-      private def create_database_if_not_exist = raise NotImplementedError
-      private def register = raise NotImplementedError
+      private def create_database_if_not_exist() raise NotImplementedError end
+      private def register() raise NotImplementedError end
 
     end
 

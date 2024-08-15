@@ -20,7 +20,7 @@ module RoughDiary
       end
 
 
-      def data_id=(val) = @data[:id] = val
+      def data_id=(val) @data[:id] = val end
 
 
       private def data_valid?
@@ -28,8 +28,8 @@ module RoughDiary
       end
 
 
-      private def data_assign = raise NotImplementedError
-      def database_format = raise NotImplementedError
+      private def data_assign() raise NotImplementedError end
+      def database_format()     raise NotImplementedError end
 
     end
 
@@ -44,8 +44,8 @@ module RoughDiary
       end
 
 
-      def data_content=(val) = @data[:content] = val
-      def data_title=(val) = @data[:title] = val
+      def data_content=(val)  @data[:content] = val end
+      def data_title=(val)    @data[:title] = val end
 
 
       def database_format
@@ -74,7 +74,7 @@ module RoughDiary
       end
 
 
-      def data_edit_content=(val) = @data[:edit_content] = val
+      def data_edit_content=(val) @data[:edit_content] = val end
 
 
       def database_format
@@ -84,7 +84,7 @@ module RoughDiary
 
         return_savedata = formated_savedata.new(
           create_date:  @data[:create_date].getutc.strftime('%Y-%m-%d %H:%M:%S'),
-          fix_diary_id: @data[:fix_diary_id].to_i
+          fix_diary_id: @data[:fix_diary_id].to_i,
           edit_content: @data[:edit_content].to_s
         )
         return_savedata
@@ -92,3 +92,4 @@ module RoughDiary
 
     end
   end
+end
