@@ -54,7 +54,7 @@ module RoughDiary
             id INTEGER PRIMARY KEY,
             create_date TEXT,
             title TEXT,
-            follow_diary INTEGER
+            content TEXT
           );
         SQL
 
@@ -90,9 +90,9 @@ module RoughDiary
         check_data_holder
         sql = <<~SQL
           INSERT INTO diary_entries (
-            diary_path, title, create_date, type, follow_diary
+            create_date, title, content
           ) VALUES (
-            ?, ?, ?, ?, ?
+            ?, ?, ?
           )
         SQL
 
@@ -100,9 +100,8 @@ module RoughDiary
 
         @database.execute sql, [
           @data_holder.file_path,
-          data.title,
           data.create_date,
-          data.type,
+          data.title,
           data.follow_diary
         ]
         @database
