@@ -15,8 +15,6 @@ module RoughDiary
 
     def initialize
       @database_manager = DatabaseManager.new(RoughDiary::Config::DATABASE_PATH)
-      @writer = Writer.new(@database_manager)
-      @reader = Reader.new(@database_manager)
     end
 
     
@@ -30,12 +28,15 @@ module RoughDiary
         opt.banner = "Usage: diary [options]"
 
         opt.on('-w', '--write [TITLE]', 'write diary. If TITLE specified, write named diary') do |v|
+          @writer = Writer.new(@database_manager, title: v[0])
           @writer.write
         end
         
         opt.on('-r', '--read [TITLE]', 'read diary. If TITLE specified, read TITLE diary') do |v|
+          @reader = Reader.new(@database_manager)
           @reader.read
         end
+
       end.parse!
     end
 
