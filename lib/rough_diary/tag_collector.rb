@@ -1,12 +1,12 @@
 module RoughDiary
   class TagCollector
-    def initialize(savedata_manager)
-      @savedata_manager = savedata_manager
+    def initialize(data_holder)
+      @data_holder = data_holder
     end
 
 
     def collect
-      @tags = @savedata_manager.get(:content).scan(/#\w+/)
+      @tags = @data_holder.get(:content).scan(/#\w+/)
     end
 
   end

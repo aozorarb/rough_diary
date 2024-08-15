@@ -4,20 +4,20 @@ module RoughDiary
   class Writer
     include RoughDiary
     
-    def initialize(database_manager, savedata: nil)
-      @savedata_manager = savedata || SavedataManager::Normal.new(RoughDiary::Config::SAVEDATA_DIR)
+    def initialize(database_manager, data_holder: nil)
+      @data_holder = data_holder || DataHolder::Normal.new
       @database_manager = database_manager
-      @content_generator = DiaryContentGenerator.new(@savedata_manager)
+      @content_generator = DiaryContentGenerator.new(@data_holder)
 
-      @database_manager.savedata_manager = @savedata_manager
+      @database_manager.data_holder = @data_holder
     end
 
     
     def write
       @content_generator.run
-      @savedata_manager.create_savefile_path
+      @data_holder.create_savefile_path
       @database_manager.register
-      @savedata_manager.save
+      @data_holder.save
       true
     end
   end

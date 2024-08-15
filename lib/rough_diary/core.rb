@@ -3,7 +3,7 @@
 require 'optparse'
 require_relative 'version'
 require_relative 'database_manager'
-require_relative 'savedata_manager'
+require_relative 'data_holder'
 require_relative 'tag_collector'
 require_relative 'config'
 require_relative 'writer'

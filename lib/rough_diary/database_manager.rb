@@ -56,7 +56,7 @@ module RoughDiary
 
 
 
-    def savedata_manager=(manager) @savedata_manager = manager end
+    def data_holder=(val) @data_holder = val end
 
 
     def register
@@ -68,16 +68,16 @@ module RoughDiary
     end
 
 
-    private def check_savedata_manager
-      unless @savedata_manager
+    private def check_data_holder
+      unless @data_holder
         raise RoughDiary::InstanceVariableNilError,
-        "Please set @savedata_manager" unless @savedata_manager
+        "Please set @data_holder" unless @data_holder
       end
     end
 
 
     private def insert_diary_entries
-      check_savedata_manager
+      check_data_holder
       sql = <<~SQL
         INSERT INTO diary_entries (
           diary_path, title, create_date, type, follow_diary
@@ -86,10 +86,10 @@ module RoughDiary
         )
       SQL
 
-      data = @savedata_manager.database_format
+      data = @data_holder.database_format
 
       @database.execute sql, [
-        @savedata_manager.file_path,
+        @data_holder.file_path,
         data.title,
         data.create_date,
         data.type,
@@ -100,7 +100,7 @@ module RoughDiary
 
 
     private def insert_diary_tags
-      check_savedata_manager
+      check_data_holder
       sql = <<~SQL
       INSERT INTO diary_tags
         (id, tag)
@@ -108,12 +108,12 @@ module RoughDiary
         (?, ?)
       SQL
 
-      tag_collector = RoughDiary::TagCollector.new(@savedata_manager)
+      tag_collector = RoughDiary::TagCollector.new(@data_holder)
       tags = tag_collector.collect
 
       tags.each do |tag|
         @database.execute sql, [
-          @savedata_manager.get(:id),
+          @data_holder.get(:id),
           tag
         ]
       end
@@ -122,8 +122,8 @@ module RoughDiary
 
 
     private def set_savedata_id_data_last_inserted
-      check_savedata_manager
-      @savedata_manager.id_data = @database.last_insert_row_id
+      check_data_holder
+      @data_holder.id_data = @database.last_insert_row_id
     end
 
   end
