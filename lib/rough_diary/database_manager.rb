@@ -4,13 +4,29 @@ require 'fileutils'
 module RoughDiary
   class DatabaseManager
     def initialize(db_path)
-      @db_path = db_path
+      unless File.exist?(db_path)
+        FileUtils.mkpath(File.dirname(db_path))
+        FileUtils.touch(db_path)
+      end
+
+      @database = SQLite3::Database.new(db_path)
+      @database.results_as_hash = true
+      ObjectSpace.define_finalizer(self, RoughDiary::DatabaseManager.db_finalize(@database))
+
       @manager = nil
+    end
+
+
+    def self.db_finalize(database)
+      proc { database&.close }
     end
 
     
     def manager=(klass)
-      @manager = klass.new(@db_path)
+      @manager = klass.new(@database)
+    rescue
+      puts 'Specify DatabaseManager::{Normal, Fix}'
+      puts $!
     end
 
 
@@ -25,11 +41,6 @@ module RoughDiary
       @manager&.respond_to?(sym) ? true : super
     end
 
-
-    def self.db_finalize(database)
-      proc { database&.close }
-    end
-
   end
 end
 
@@ -38,20 +49,10 @@ end
 class RoughDiary::DatabaseManager
 
   class Base
-    def initialize(file_path)
-      unless File.exist?(file_path)
-        FileUtils.mkpath(File.dirname(file_path))
-        FileUtils.touch(file_path)
-      end
-
-      @database = SQLite3::Database.new(file_path)
-      @database.results_as_hash = true
+    def initialize(database)
+      @database = database
       create_database_if_not_exist
-
-      ObjectSpace.define_finalizer(self, RoughDiary::DatabaseManager.db_finalize(@database))
     end
-
-
 
 
     def data_holder=(val) @data_holder = val end
