@@ -15,9 +15,7 @@ module RoughDiary
     
     def write
       @content_generator.run
-      @data_holder.create_savefile_path
       @database_manager.register
-      @data_holder.save
       true
     end
   end
