@@ -7,11 +7,6 @@ class TestWriter < Minitest::Test
     @mock_content_generator = Minitest::Mock.new
     @mock_database_manager = Minitest::Mock.new
     
-    Kernel.module_exec do
-      alias_method :v_get ,:instance_variable_get
-      alias_method :v_set ,:instance_variable_set
-    end
-    
     @mock_database_manager.expect :data_holder=, true, [RoughDiary::DataHolder::Normal]
     @writer = RoughDiary::Writer.new(@mock_database_manager)
   end
