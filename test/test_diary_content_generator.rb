@@ -3,14 +3,15 @@
 require "test_helper"
 
 include RoughDiary
+
 class DiaryContentGenerator::Test < Minitest::Test
   def setup
-    @mock_savedata_manager = Minitest::Mock.new
+    @mock_data_holder =Minitest::Mock.new
     @mock_tempfile = Minitest::Mock.new
     @mock_tempfile.expect :close, true
 
     Tempfile.stub :create, @mock_tempfile do
-      @generator = DiaryContentGenerator.new(@mock_savedata_manager)
+      @generator = DiaryContentGenerator.new(@mock_data_holder)
     end
 
   end
@@ -20,7 +21,7 @@ class DiaryContentGenerator::Test < Minitest::Test
     @mock_tempfile.expect :read, 'mock diary content'
     @mock_tempfile.expect :reopen, true, ['path/to', 'r']
     @mock_tempfile.expect :path, 'path/to'
-    @mock_savedata_manager.expect :content_data=, nil, ['mock diary content']
+    @mock_data_holder.expect :data_content=, nil, ['mock diary content']
 
     @generator.stub :edit_tempfile, nil do
       @generator.stub :ask_diary_title, true do
@@ -29,7 +30,7 @@ class DiaryContentGenerator::Test < Minitest::Test
     end
 
     @mock_tempfile.verify
-    @mock_savedata_manager.verify
+    @mock_data_holder.verify
   end
 
 
@@ -44,13 +45,13 @@ class DiaryContentGenerator::Test < Minitest::Test
 
   def test_ask_diary_title
     suppress_output do
-      @mock_savedata_manager.expect :title_data=, nil, ['test title']
+      @mock_data_holder.expect :data_title=, nil, ['test title']
 
       @generator.stub :gets, "test title\n" do
         @generator.send(:ask_diary_title)
       end
 
-      @mock_savedata_manager.verify
+      @mock_data_holder.verify
     end
   end
 
@@ -61,7 +62,7 @@ class DiaryContentGenerator::Test < Minitest::Test
         @generator.send(:ask_diary_title)
       end
 
-      @mock_savedata_manager.verify
+      @mock_data_holder.verify
     end
   end
 

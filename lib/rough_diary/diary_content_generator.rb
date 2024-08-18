@@ -5,8 +5,8 @@ require 'tempfile'
 
 module RoughDiary
   class DiaryContentGenerator
-    def initialize(savedata_manager)
-      @savedata_manager = savedata_manager
+    def initialize(data_holder)
+      @data_holder = data_holder
       @tempfile = Tempfile.create('diary', mode: 666)
       @tempfile.close
     end
@@ -38,7 +38,7 @@ module RoughDiary
       input_title = gets.chomp
 
       unless input_title.empty?
-        @savedata_manager.title_data = input_title
+        @data_holder.data_title = input_title
       end
     end
 
@@ -47,7 +47,7 @@ module RoughDiary
       edit_tempfile
       ask_diary_title
       @tempfile.reopen(@tempfile.path, 'r')
-      @savedata_manager.content_data = @tempfile.read
+      @data_holder.data_content = @tempfile.read
     end
 
 
