@@ -1,10 +1,11 @@
 # frozen_string_literal: true
 
 require "test_helper"
+include RoughDiary
 
-class TestRoughDiary < Minitest::Test
+class Test < Minitest::Test
   def test_that_it_has_a_version_number
-    refute_nil ::RoughDiary::VERSION
+    refute_nil VERSION
   end
 
 end

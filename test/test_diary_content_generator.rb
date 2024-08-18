@@ -2,14 +2,15 @@
 
 require "test_helper"
 
-class TestDiaryContentGenerator < Minitest::Test
+include RoughDiary
+class DiaryContentGenerator::Test < Minitest::Test
   def setup
     @mock_savedata_manager = Minitest::Mock.new
     @mock_tempfile = Minitest::Mock.new
     @mock_tempfile.expect :close, true
 
     Tempfile.stub :create, @mock_tempfile do
-      @generator = RoughDiary::DiaryContentGenerator.new(@mock_savedata_manager)
+      @generator = DiaryContentGenerator.new(@mock_savedata_manager)
     end
 
   end
@@ -73,7 +74,7 @@ class TestDiaryContentGenerator < Minitest::Test
 
   def test_edit_tempfile_raise_error_for_invalid_editor
     @generator.stub :valid_editor?, false do
-      assert_raises(RoughDiary::InvalidConfigrationError) do
+      assert_raises(InvalidConfigrationError) do
         @generator.send(:edit_tempfile, editor: 'invalid_editor')
       end
     end

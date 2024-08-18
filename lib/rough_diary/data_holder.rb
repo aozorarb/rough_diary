@@ -66,7 +66,7 @@ module RoughDiary
 
 
     class Fix < Base
-      def data_assign(fix_diary_id)
+      private def data_assign(fix_diary_id)
         @data[:id]            = nil
         @data[:create_date]   = Time.now
         @data[:fix_diary_id]  = fix_diary_id

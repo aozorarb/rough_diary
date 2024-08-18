@@ -2,6 +2,7 @@
 
 require "test_helper"
 
-class TestReader < Minitest::Test
+include RoughDiary
+class Reader::Test < Minitest::Test
 
 end

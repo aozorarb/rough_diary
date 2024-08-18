@@ -1,9 +1,11 @@
 require_relative 'test_helper'
 
-class TestTagCollector < Minitest::Test
+include RoughDiary
+
+class TagCollector::Test < Minitest::Test
   def setup
     @mock_savedata_manager = Minitest::Mock.new
-    @tag_collector = RoughDiary::TagCollector.new(@mock_savedata_manager)
+    @tag_collector = TagCollector.new(@mock_savedata_manager)
   end
 
 
