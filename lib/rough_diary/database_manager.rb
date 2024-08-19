@@ -25,15 +25,12 @@ module RoughDiary
     def manager=(klass)
       @manager = klass.new(@database)
     rescue
-      puts 'Specify DatabaseManager::{Normal, Fix}'
-      puts $!
+      raise ArgumentError, 'Specify DatabaseManager::{Normal, Fix}'
     end
 
 
     def method_missing(method, *args)
       @manager&.public_send(method, *args)
-    rescue
-      super
     end
 
 
@@ -68,12 +65,12 @@ class RoughDiary::DatabaseManager
 
     private def set_data_id_last_inserted
       check_data_holder
-      @data_holder.id_data = @database.last_insert_row_id
+      @data_holder.data_id = @database.last_insert_row_id
     end
 
 
     private def create_database_if_not_exist() raise NotImplementedError end
-    private def register() raise NotImplementedError end
+    def register() raise NotImplementedError end
 
   end
 
@@ -182,6 +179,8 @@ class RoughDiary::DatabaseManager
       sql = <<~SQL
         INSERT INTO diary_fixies (
           create_date, fix_diary_id, edit_content
+        ) VALUES (
+          ?, ?, ?
         )
       SQL
 

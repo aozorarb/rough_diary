@@ -25,7 +25,9 @@ class DatabaseManager::Test < Minitest::Test
     @db_manager.manager = DatabaseManager::Normal
     @db_manager.data_holder = Minitest::Mock.new
 
-    assert @db_manager.register
+    @db_manager.instance_variable_get(:@manager).stub :register, :true do
+      assert @db_manager.register
+    end
     assert_raises(NoMethodError) { @db_manager.not_found_method }
   end
 
