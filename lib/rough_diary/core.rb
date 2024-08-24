@@ -8,6 +8,7 @@ require_relative 'tag_collector'
 require_relative 'config'
 require_relative 'writer'
 require_relative 'reader'
+require_relative 'editor'
 
 module RoughDiary
   class Core

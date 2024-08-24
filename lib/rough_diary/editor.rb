@@ -13,7 +13,7 @@ module RoughDiary
     end
 
     
-    def edit(file_name)
+    def edit
       @content_generator.run
       @database_manager.register
       true
