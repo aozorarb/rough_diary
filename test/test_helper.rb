@@ -8,5 +8,6 @@ Kernel.module_exec do
 end
 
 require "rough_diary"
+require 'debug'
 require 'minitest/mock'
 require "minitest/autorun"

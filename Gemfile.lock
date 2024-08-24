@@ -14,7 +14,7 @@ GEM
       rdoc
       reline (>= 0.3.8)
     mini_portile2 (2.8.7)
-    minitest (5.20.0)
+    minitest (5.25.1)
     mutex_m (0.2.0)
     psych (5.1.2)
       stringio
@@ -34,7 +34,7 @@ PLATFORMS
 
 DEPENDENCIES
   debug (~> 1.9.1)
-  minitest (~> 5.20)
+  minitest (~> 5.25)
   mutex_m (~> 0.2.0)
   rake (~> 13.0)
   rough_diary!
