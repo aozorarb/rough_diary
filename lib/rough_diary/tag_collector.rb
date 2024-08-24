@@ -7,7 +7,6 @@ module RoughDiary
 
     def collect
       raise 'enter content before collect tags' if @data_holder.get(:content).nil?
-
       @tags = @data_holder.get(:content).scan(/#\w+/)
     end
 

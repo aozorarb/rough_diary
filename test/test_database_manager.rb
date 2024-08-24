@@ -76,16 +76,30 @@ class DatabaseManager::Normal::Test < Minitest::Test
 
 
   def test_insert_diary_tags
-    @mock_data_holder.expect :get, '#hello', [:content]
-    @mock_data_holder.expect :get, 1, [:id]
+    # I cannot use mock for get(:content) #=> '#hello'
+    # So use original data_holder mock
+    original_mock_data_holder =
+      Class.new do
+        def initialize
+          @get_val = {
+            id: 1,
+            content: '#hello'
+          }
+        end
 
-    @manager.send(:insert_diary_tags) 
+        def get(arg) @get_val[arg] end
+      end
+    
+    org_mock_data_holder = original_mock_data_holder.new
+    @db_manager.data_holder = org_mock_data_holder
+    @manager.send(:insert_diary_tags)
 
     res =
       @db.execute('SELECT * FROM diary_tags')[0]
 
     assert_equal 1, res['id']
     assert_equal '#hello', res['tag']
+
   end
 end
 
