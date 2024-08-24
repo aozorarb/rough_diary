@@ -9,6 +9,6 @@ require "rough_diary"
 
 require "irb"
 require 'debug'
-require_relative 'helper/test_writer.rb'
+require_relative 'helper/wre'
 setup
 #IRB.start(__FILE__)
