@@ -1,11 +1,13 @@
-1. tmpファイルをエディタで開いて編集してもらう
-2: 元のファイルとの差分を求めてyaml形式にする
-3. データベースに登録する。形式は以下の通り。Writerとは違うテーブル
+1. 編集してもらう日記のidをもらい、その日記とFixを集める(DatabaseManager#collect_diary_same_id)
+2. 1をまとめる(ContentMerger)
+3. 2をtmpファイルに送り、エディタで開いて編集してもらう(ContentEditor)
+4. 元のファイルとの差分を求めてyaml形式にする(DifferenceTracker)
+5. データベースに登録する。形式は以下の通り。Writerとは違うテーブル(DatabaseManager::Fix)
 ===
 id - 一意に特定できる識別子。データベースがくれる数値
 type - Editorでは:fix。Writerでは:normal
 create_date - 修正を作成した日付
 follow_diary - 修正する日記のid
-edit_content - 編集した行単位の差分。2でつくったもの
+edit_content - 編集した行単位の差分。4でつくったもの
 ===
 
