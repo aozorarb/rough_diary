@@ -14,6 +14,7 @@ module RoughDiary
       ObjectSpace.define_finalizer(self, RoughDiary::DatabaseManager.db_finalize(@database))
 
       @manager = nil
+      create_database_if_not_exist
     end
 
 
@@ -38,46 +39,14 @@ module RoughDiary
       @manager&.respond_to?(sym) ? true : super
     end
 
-  end
-end
 
-
-
-class RoughDiary::DatabaseManager
-
-  class Base
-    def initialize(database)
-      @database = database
-      create_database_if_not_exist
-    end
-
-
-    def data_holder=(val) @data_holder = val end
-
-
-    private def check_data_holder
-      unless @data_holder
-        raise RoughDiary::InstanceVariableNilError,
-        "Please set @data_holder" unless @data_holder
-      end
-    end
-
-
-    private def set_data_id_last_inserted
-      check_data_holder
-      @data_holder.data_id = @database.last_insert_row_id
-    end
-
-
-    private def create_database_if_not_exist() raise NotImplementedError end
-    def register() raise NotImplementedError end
-
-  end
-
-
-
-  class Normal < Base
     private def create_database_if_not_exist
+      create_database_if_not_exist_normal
+      create_database_if_not_exist_fix
+    end
+
+
+    private def create_database_if_not_exist_normal
       # mainly database
       @database.execute <<~SQL
         CREATE TABLE IF NOT EXISTS diary_entries (
@@ -106,6 +75,68 @@ class RoughDiary::DatabaseManager
       @database
     end
 
+
+    private def create_database_if_not_exist_fix
+      @database.execute <<~SQL
+        CREATE TABLE IF NOT EXISTS diary_fixies (
+          id INTEGER PRIMARY KEY,  
+          create_date TEXT,
+          fix_diary_id INTEGER,
+          edit_content TEXT
+        );
+      SQL
+    end
+    
+  end
+end
+
+
+
+class RoughDiary::DatabaseManager
+
+  class Base
+    def initialize(database)
+      @database = database
+    end
+
+
+    def data_holder=(val) @data_holder = val end
+
+
+    private def check_data_holder
+      unless @data_holder
+        raise RoughDiary::InstanceVariableNilError,
+        "Please set @data_holder" unless @data_holder
+      end
+    end
+
+
+    private def set_data_id_last_inserted
+      check_data_holder
+      @data_holder.data_id = @database.last_insert_row_id
+    end
+
+
+    def collect_diary_same_id(id)
+      target_diary = @database.execute <<~SQL
+        SELECT * FROM diary_entries WHERE id == #{id}
+      SQL
+
+      diary_fixies = @database.execute <<~SQL
+        SELECT * FROM diary_fixies WHERE fix_diary_id == #{id}
+      SQL
+
+      [target_diary[0], diary_fixies]
+    end
+
+
+    def register() raise NotImplementedError end
+
+  end
+
+
+
+  class Normal < Base
 
     def register
       check_data_holder
@@ -163,16 +194,6 @@ class RoughDiary::DatabaseManager
 
 
   class Fix < Base
-    private def create_database_if_not_exist
-      @database.execute <<~SQL
-        CREATE TABLE IF NOT EXISTS diary_fixies (
-          id INTEGER PRIMARY KEY,  
-          create_date TEXT,
-          fix_diary_id INTEGER,
-          edit_content TEXT
-        );
-      SQL
-    end
 
 
     private def insert_diary_fixies
