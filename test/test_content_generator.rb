@@ -4,14 +4,14 @@ require "test_helper"
 
 include RoughDiary
 
-class DiaryContentGenerator::Test < Minitest::Test
+class ContentGenerator::Test < Minitest::Test
   def setup
-    @mock_data_holder =Minitest::Mock.new
+    @mock_data_holder = Minitest::Mock.new
     @mock_tempfile = Minitest::Mock.new
     @mock_tempfile.expect :close, true
 
     Tempfile.stub :create, @mock_tempfile do
-      @generator = DiaryContentGenerator.new(@mock_data_holder)
+      @generator = ContentGenerator.new(@mock_data_holder)
     end
 
   end
