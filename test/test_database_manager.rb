@@ -101,6 +101,37 @@ class DatabaseManager::Normal::Test < Minitest::Test
     assert_equal '#hello', res['tag']
 
   end
+
+
+  def test_base_collect_diary_same_id
+    data_class = Data.define(:create_date, :title, :content)
+    data = data_class.new('2000-01-01 00:00:00', 'test', 'goodbye')
+    @mock_data_holder.expect :database_format, data
+
+    @manager.send(:insert_diary_entries)
+
+    @db.execute <<~SQL
+      INSERT INTO diary_fixies (
+        create_date, fix_diary_id, edit_content
+      ) VALUES (
+        '2000-01-01 00:00:00', 1, 'edit test'
+      )
+    SQL
+
+    res = @manager.collect_diary_same_id(1)
+
+    normal, fix = res
+    fix = fix[0]
+
+    assert_equal '2000-01-01 00:00:00', normal['create_date']
+    assert_equal 'test', normal['title']
+    assert_equal 'goodbye', normal['content']
+
+    assert_equal '2000-01-01 00:00:00', fix['create_date']
+    assert_equal 1, fix['fix_diary_id']
+    assert_equal 'edit test', fix['edit_content']
+  end
+
 end
 
 
@@ -120,9 +151,11 @@ class DatabaseManager::Fix::Test < Minitest::Test
 
   def test_initialize
     created_tables =
-      @db.execute 'SELECT * FROM sqlite_master'
+      @db.execute "SELECT * FROM sqlite_master WHERE name == 'diary_fixies'"
+
+    created_tables = created_tables[0]
     
-    assert_equal 'diary_fixies', created_tables[0]['name']
+    assert_equal 'diary_fixies', created_tables['name']
   end
 
 
