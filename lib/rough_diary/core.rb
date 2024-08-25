@@ -4,18 +4,19 @@ require 'optparse'
 require_relative 'version'
 require_relative 'database_manager'
 require_relative 'data_holder'
-require_relative 'tag_collector'
+require_relative 'diary_handle'
 require_relative 'config'
 require_relative 'writer'
 require_relative 'reader'
 require_relative 'editor'
+
 
 module RoughDiary
   class Core
     include RoughDiary
 
     def initialize
-      @database_manager = DatabaseManager.new(RoughDiary::Config::DATABASE_PATH)
+      @database_manager = DatabaseManager.new(Config::DATABASE_PATH)
       @database_manager.manager = DatabaseManager::Normal
     end
 

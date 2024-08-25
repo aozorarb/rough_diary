@@ -8,8 +8,5 @@ module RoughDiary
     end
 
 
-    def content_merge
-
-    end
   end
 end

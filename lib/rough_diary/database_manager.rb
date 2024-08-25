@@ -126,7 +126,7 @@ class RoughDiary::DatabaseManager
       SQL
 
       diary_fixies = @database.execute <<~SQL
-        SELECT * FROM diary_fixies WHERE fix_diary_id == #{id}
+        SELECT * FROM diary_fixies WHERE fix_diary_id == #{id} ORDER BY create_date
       SQL
 
       [target_diary[0], diary_fixies]
