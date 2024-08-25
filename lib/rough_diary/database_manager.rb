@@ -1,5 +1,8 @@
 require 'sqlite3'
 require 'fileutils'
+require_relative 'diary_handle'
+
+include RoughDiary
 
 module RoughDiary
   class DatabaseManager
@@ -11,7 +14,7 @@ module RoughDiary
 
       @database = SQLite3::Database.new(db_path)
       @database.results_as_hash = true
-      ObjectSpace.define_finalizer(self, RoughDiary::DatabaseManager.db_finalize(@database))
+      ObjectSpace.define_finalizer(self, DatabaseManager.db_finalize(@database))
 
       @manager = nil
       create_database_if_not_exist
@@ -105,7 +108,7 @@ class RoughDiary::DatabaseManager
 
     private def check_data_holder
       unless @data_holder
-        raise RoughDiary::InstanceVariableNilError,
+        raise InstanceVariableNilError,
         "Please set @data_holder" unless @data_holder
       end
     end
@@ -177,8 +180,7 @@ class RoughDiary::DatabaseManager
         (?, ?)
       SQL
 
-      tag_collector = RoughDiary::TagCollector.new(@data_holder)
-      tags = tag_collector.collect
+      tags = DiaryHandle.tag_collect(@data_holder)
 
       tags.each do |tag|
         @database.execute sql, [

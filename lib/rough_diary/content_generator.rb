@@ -4,7 +4,7 @@ require 'tempfile'
 
 
 module RoughDiary
-  class DiaryContentGenerator
+  class ContentGenerator
     def initialize(data_holder)
       @data_holder = data_holder
       @tempfile = Tempfile.create('diary', mode: 666)
