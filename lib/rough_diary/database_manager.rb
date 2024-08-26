@@ -125,11 +125,22 @@ class RoughDiary::DatabaseManager
         SELECT * FROM diary_entries WHERE id == #{id}
       SQL
 
+      normal_data_holder = DataHolder::Normal.new
+      normal_data_holder.create_from_database(target_diary[0])
+
+      fix_data_holders = []
+
       diary_fixies = @database.execute <<~SQL
         SELECT * FROM diary_fixies WHERE fix_diary_id == #{id} ORDER BY create_date
       SQL
+      
+      diary_fixies.each do |fix|
+        fix_data_holder = DataHolder::Fix.new(nil)
+        fix_data_holder.create_from_database(fix)
+        fix_data_holders << fix_data_holder
+      end
 
-      [target_diary[0], diary_fixies]
+      [normal_data_holder, fix_data_holders]
     end
 
 

@@ -1,4 +1,5 @@
 require 'yaml/store'
+require 'time'
 
 module RoughDiary
   module DataHolder
@@ -8,6 +9,14 @@ module RoughDiary
         @data = {}
 
         data_assign(*args)
+      end
+
+
+      def create_from_database(sql_result)
+        sql_result['create_date'] = Time.parse(sql_result['create_date'])
+        sql_result.each do |key, val|
+          @data[key.to_sym] = val
+        end
       end
 
 
@@ -26,6 +35,7 @@ module RoughDiary
       private def data_valid?
         @data.all? {|val| val }
       end
+
 
 
       private def data_assign() raise NotImplementedError end
@@ -60,6 +70,7 @@ module RoughDiary
         )
         return_data
       end
+
 
     end
 
