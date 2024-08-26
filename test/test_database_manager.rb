@@ -123,13 +123,15 @@ class DatabaseManager::Normal::Test < Minitest::Test
     normal, fix = res
     fix = fix[0]
 
-    assert_equal '2000-01-01 00:00:00', normal['create_date']
-    assert_equal 'test', normal['title']
-    assert_equal 'goodbye', normal['content']
+    sample_time = Time.local(2000, 1, 1)
 
-    assert_equal '2000-01-01 00:00:00', fix['create_date']
-    assert_equal 1, fix['fix_diary_id']
-    assert_equal 'edit test', fix['edit_content']
+    assert_equal sample_time, normal.get(:create_date)
+    assert_equal 'test', normal.get(:title)
+    assert_equal 'goodbye', normal.get(:content)
+
+    assert_equal sample_time, fix.get(:create_date)
+    assert_equal 1, fix.get(:fix_diary_id)
+    assert_equal 'edit test', fix.get(:edit_content)
   end
 
 end
