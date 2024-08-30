@@ -1,5 +1,5 @@
 module RoughDiary
-  module DiaryHandle
+  module DiaryUtils
     module_function
 
     def tag_collect(data_holder)

@@ -1,6 +1,6 @@
 require 'sqlite3'
 require 'fileutils'
-require_relative 'diary_handle'
+require_relative 'diary_utils'
 
 include RoughDiary
 
