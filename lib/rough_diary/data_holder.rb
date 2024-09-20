@@ -81,22 +81,23 @@ module RoughDiary
         @data[:id]            = nil
         @data[:create_date]   = Time.now
         @data[:fix_diary_id]  = fix_diary_id
-        @data[:edit_content]  = nil
+        @data[:edit_diffs]  = nil
       end
 
 
-      def data_edit_content=(val) @data[:edit_content] = val end
+      def data_id=(val)         @data[:id] = val         end
+      def data_edit_diffs=(val) @data[:edit_diffs] = val end
 
 
       def database_format
         formated_savedata = Data.define(
-          :create_date, :fix_diary_id, :edit_content
+          :create_date, :fix_diary_id, :edit_diffs
         )
 
         return_savedata = formated_savedata.new(
           create_date:  @data[:create_date].getutc.strftime('%Y-%m-%d %H:%M:%S'),
           fix_diary_id: @data[:fix_diary_id].to_i,
-          edit_content: @data[:edit_content].to_s
+          edit_diffs: @data[:edit_diffs].to_s
         )
         return_savedata
       end
