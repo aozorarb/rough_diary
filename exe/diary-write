@@ -1,0 +1,8 @@
+#!/usr/bin/env ruby
+require 'rough_diary'
+
+core = RoughDiary::Core.new
+
+core.write
+
+exit 0

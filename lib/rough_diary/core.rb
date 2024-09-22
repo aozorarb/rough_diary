@@ -1,10 +1,8 @@
 # frozen_string_literal: true
 
-require 'optparse'
 require_relative 'version'
 require_relative 'database_manager'
 require_relative 'data_holder'
-require_relative 'diary_handle'
 require_relative 'config'
 require_relative 'writer'
 require_relative 'reader'
@@ -19,28 +17,18 @@ module RoughDiary
       @database_manager = DatabaseManager.new(Config::DATABASE_PATH)
       @database_manager.manager = DatabaseManager::Normal
     end
-
     
-    def run
-      main
+    def write
+      # write a diary. If the title specified, write named diary
+      writer = Writer.new(@database_manager)#, title: ARGV[0])
+      writer.write
     end
 
-    
-    private def main
-      OptionParser.new do |opt|
-        opt.banner = "Usage: diary [options]"
 
-        opt.on('-w', '--write [TITLE]', 'write diary. If TITLE specified, write named diary') do |v|
-          @writer = Writer.new(@database_manager, title: v[0])
-          @writer.write
-        end
-        
-        opt.on('-r', '--read [TITLE]', 'read diary. If TITLE specified, read TITLE diary') do |v|
-          @reader = Reader.new(@database_manager)
-          @reader.read
-        end
-
-      end.parse!
+    def read
+      # read a diary which given title.
+      reader = Reader.new(@database_manager)
+      reader.read
     end
 
   end
