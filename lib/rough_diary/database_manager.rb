@@ -2,10 +2,12 @@ require 'sqlite3'
 require 'fileutils'
 require_relative 'diary_utils'
 
-include RoughDiary
 
 module RoughDiary
+
   class DatabaseManager
+    include RoughDiary
+
     def initialize(db_path)
       unless File.exist?(db_path)
         FileUtils.mkpath(File.dirname(db_path))
@@ -98,6 +100,8 @@ end
 class RoughDiary::DatabaseManager
 
   class Base
+    include RoughDiary
+
     def initialize(database)
       @database = database
     end
@@ -151,6 +155,7 @@ class RoughDiary::DatabaseManager
 
 
   class Normal < Base
+    include RoughDiary
 
     def register
       check_data_holder
@@ -191,7 +196,7 @@ class RoughDiary::DatabaseManager
         (?, ?)
       SQL
 
-      tags = DiaryHandle.tag_collect(@data_holder)
+      tags = DiaryUtils.tag_collect(@data_holder)
 
       tags.each do |tag|
         @database.execute sql, [
@@ -207,7 +212,7 @@ class RoughDiary::DatabaseManager
 
 
   class Fix < Base
-
+    include RoughDiary
 
     private def insert_diary_fixies
       sql = <<~SQL
