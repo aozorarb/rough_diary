@@ -8,5 +8,16 @@ module RoughDiary
     end
 
 
+    def valid_editor?(editor)
+      # Is editor available on shell?
+      if editor.nil? ||
+          !system("which #{editor} 2>&1 > /dev/null")
+        false
+      else
+        true
+      end
+    end
+
+
   end
 end
