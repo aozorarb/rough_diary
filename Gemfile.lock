@@ -9,6 +9,7 @@ GEM
     debug (1.9.1)
       irb (~> 1.10)
       reline (>= 0.3.8)
+    diff-lcs (1.5.1)
     io-console (0.7.1)
     irb (1.11.0)
       rdoc
@@ -34,6 +35,7 @@ PLATFORMS
 
 DEPENDENCIES
   debug (~> 1.9.1)
+  diff-lcs (~> 1.5)
   minitest (~> 5.25)
   mutex_m (~> 0.2.0)
   rake (~> 13.0)
@@ -41,4 +43,4 @@ DEPENDENCIES
   sqlite3 (~> 2.0.1)
 
 BUNDLED WITH
-   2.5.10
+   2.5.18
