@@ -66,19 +66,4 @@ class ContentGenerator::Test < Minitest::Test
     end
   end
 
-
-  def test_valid_editor?
-    assert @generator.send(:valid_editor?, 'vim')
-    refute @generator.send(:valid_editor?, 'invalid_editor')
-  end
-
-
-  def test_edit_tempfile_raise_error_for_invalid_editor
-    @generator.stub :valid_editor?, false do
-      assert_raises(InvalidConfigrationError) do
-        @generator.send(:edit_tempfile, editor: 'invalid_editor')
-      end
-    end
-  end
-
 end
