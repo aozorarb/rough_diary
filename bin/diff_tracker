@@ -1,0 +1,12 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require "bundler/setup"
+require "rough_diary"
+
+
+require "irb"
+require 'debug'
+require_relative 'helper/diff_tracker'
+setup
+#IRB.start(__FILE__)
