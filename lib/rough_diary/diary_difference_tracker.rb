@@ -11,8 +11,6 @@ module RoughDiary
 
     
     def merge(level)
-      level ||= @fixies_holders.size
-
       raise ArgumentError, 'Invalid merge level' unless level.between?(0, @fixies_holders.size)
       
       merged_diary = @base_holder.dup
@@ -24,19 +22,20 @@ module RoughDiary
     end
 
 
+    def all_merge() merge(@fixies_holders.size) end
+
+
     private def _merge(base, fix)
+      binding.break
       ret = base.dup
-      ret.data_edit_diffs = Diff::LCS.patch(base.get(:content), fix.get(:edit_diffs))
+      ret.data_content = Diff::LCS.patch(base.get(:content), fix.get(:edit_diffs))
       ret
     end
 
-    alias_method all_merge merge(nil)
 
-
-    def self.track(original_data, changed_data)
-      ret_fix = DataHolder::Fix.new
-      ret_fix.data_id = original_data.get(:id)
-      ret_fix.data_edit_diffs = Diff::LCS.diff(original_data, changed_data)
+    def self.track(original_data_holder, changed_data_holder)
+      ret_fix = DataHolder::Fix.new(original_data_holder.get(:id))
+      ret_fix.data_edit_diffs = Diff::LCS.diff(original_data_holder.get(:content), changed_data_holder.get(:content))
 
       ret_fix
     end

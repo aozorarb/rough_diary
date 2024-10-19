@@ -7,6 +7,7 @@ require_relative 'config'
 require_relative 'writer'
 require_relative 'reader'
 require_relative 'editor'
+require_relative 'diary_difference_tracker'
 
 
 module RoughDiary
