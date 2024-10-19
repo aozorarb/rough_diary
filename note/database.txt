@@ -1,0 +1,23 @@
+DatabaseManager下のクラスで操作する
+
+Table: diary_entries
+  - id (INTEGER, PRIMARY KEY)
+  - create_date (TEXT)
+  - title (TEXT)
+  - content (TEXT)
+
+Table: diary_tags
+  - id (INTEGER, FOREIGN -> diary_entries(id))
+  - tag (TEXT)
+  + UNIQUE (id, tag)
+
+Table: diary_fixies
+  - id (INTEGER, PRIMARY KEY)
+  - create_date (TEXT)
+  - fix_diary_id (INTEGER)
+  - edit_diffs (TEXT)
+
+Table: diary_fix_tags
+  - id (INTEGER, FOREIGN -> diary_fixies(id))
+  - tag (TEXT)
+  + UNIQUE (id, tag)
