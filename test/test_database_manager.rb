@@ -112,7 +112,7 @@ class DatabaseManager::Normal::Test < Minitest::Test
 
     @db.execute <<~SQL
       INSERT INTO diary_fixies (
-        create_date, fix_diary_id, edit_content
+        create_date, fix_diary_id, edit_diffs
       ) VALUES (
         '2000-01-01 00:00:00', 1, 'edit test'
       )
@@ -131,7 +131,7 @@ class DatabaseManager::Normal::Test < Minitest::Test
 
     assert_equal sample_time, fix.get(:create_date)
     assert_equal 1, fix.get(:fix_diary_id)
-    assert_equal 'edit test', fix.get(:edit_content)
+    assert_equal 'edit test', fix.get(:edit_diffs)
   end
 
 end
@@ -162,7 +162,7 @@ class DatabaseManager::Fix::Test < Minitest::Test
 
 
   def test_insert_diary_fixies
-    data_class = Data.define(:create_date, :fix_diary_id, :edit_content)
+    data_class = Data.define(:create_date, :fix_diary_id, :edit_diffs)
     data = data_class.new('2000-01-01 00:00:00', 1, 'edit test')
     @mock_data_holder.expect :database_format, data
 
@@ -174,7 +174,7 @@ class DatabaseManager::Fix::Test < Minitest::Test
     assert_equal 1, res['id']
     assert_equal '2000-01-01 00:00:00', res['create_date']
     assert_equal 1, res['fix_diary_id']
-    assert_equal 'edit test', res['edit_content']
+    assert_equal 'edit test', res['edit_diffs']
   end
 
 end

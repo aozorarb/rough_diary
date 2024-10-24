@@ -87,8 +87,17 @@ module RoughDiary
           id INTEGER PRIMARY KEY,  
           create_date TEXT,
           fix_diary_id INTEGER,
-          edit_content TEXT
+          edit_diffs TEXT
         );
+      SQL
+
+      @database.execute <<~SQL
+        CREATE TABLE IF NOT EXISTS diary_fix_tags (
+          id INTEGER,
+          tag TEXT,
+          FOREIGN KEY (id) REFERENCES diary_fixies(id),
+          UNIQUE(id, tag)
+        )
       SQL
     end
     
@@ -217,7 +226,7 @@ class RoughDiary::DatabaseManager
     private def insert_diary_fixies
       sql = <<~SQL
         INSERT INTO diary_fixies (
-          create_date, fix_diary_id, edit_content
+          create_date, fix_diary_id, edit_diffs
         ) VALUES (
           ?, ?, ?
         )
@@ -228,7 +237,7 @@ class RoughDiary::DatabaseManager
       @database.execute sql, [
         data.create_date,
         data.fix_diary_id,
-        data.edit_content
+        data.edit_diffs
       ]
       @database
     end
