@@ -4,30 +4,29 @@ require_relative 'error'
 
 module RoughDiary
   class DiaryDifferenceTracker
-    def initialize(base_diary_holder, diary_fixies_holders)
+    def initialize(base_diary_holder, diary_fix_holders)
       @base_holder = base_diary_holder
-      @fixies_holders = diary_fixies_holders
+      @fix_holders = diary_fix_holders
     end
 
     
     def merge(level)
-      raise ArgumentError, 'Invalid merge level' unless level.between?(0, @fixies_holders.size)
+      raise ArgumentError, 'Invalid merge level' unless level.between?(0, @fix_holders.size)
       
       merged_diary = @base_holder.dup
       level.times do |l|
-        merged_diary = _merge(merged_diary, @fixies_holders[l])
+        merged_diary = _merge(merged_diary, @fix_holders[l])
       end
 
       merged_diary
     end
 
 
-    def all_merge() merge(@fixies_holders.size) end
+    def all_merge() merge(@fix_holders.size) end
 
 
     private def _merge(base, fix)
-      binding.break
-      ret = base.dup
+      ret = Marshal.load(Marshal.dump(base))
       ret.data_content = Diff::LCS.patch(base.get(:content), fix.get(:edit_diffs))
       ret
     end
