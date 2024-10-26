@@ -4,7 +4,7 @@ module RoughDiary
 
     def tag_collect(normal_data_holder)
       raise ArgumentError, 'enter content before collect tags' if normal_data_holder.get(:content).nil?
-      normal_data_holder.get(:content).scan(/#\w+/)
+      normal_data_holder.get(:content).scan(/#[[:word:]]+/)
     end
 
 

@@ -14,11 +14,11 @@ class DiaryUtils::Test < Minitest::Test
     assert_raises(ArgumentError) { tag_collect(mock_nil_data_holder) }
 
     mock_data_holder = Minitest::Mock.new
-    msg = '#hello #world'
+    msg = '#hello #世界'
     mock_data_holder.expect :get, msg, [:content]
     mock_data_holder.expect :get, msg, [:content]
 
-    assert_equal ['#hello', '#world'], tag_collect(mock_data_holder)
+    assert_equal ['#hello', '#世界'], tag_collect(mock_data_holder)
 
     mock_nil_data_holder.verify
     mock_data_holder.verify
