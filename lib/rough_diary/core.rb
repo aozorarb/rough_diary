@@ -7,7 +7,6 @@ require_relative 'config'
 require_relative 'writer'
 require_relative 'reader'
 require_relative 'editor'
-require_relative 'diary_difference_tracker'
 
 
 module RoughDiary
@@ -26,11 +25,16 @@ module RoughDiary
     end
 
 
-    def read
-      # read a diary which given title.
+    def read(id)
+      # get diary id, read the id diary
       reader = Reader.new(@database_manager)
-      reader.read
+      reader.read(id)
     end
 
+
+    def edit(diary_id)
+      editor = Editor.new(@database_manager) 
+      editor.edit(diary_id)
+    end
   end
 end

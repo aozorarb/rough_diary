@@ -10,8 +10,8 @@ module RoughDiary
     end
 
 
-    def get_latest_diary_by_diary_id(id)
-      base_diary, fix_holders = @database_manager.collect_diary_by_id(id) 
+    def get_latest_diary_by_diary_id(db_manager, id)
+      base_diary, fix_holders = db_manager.collect_diary_by_id(id) 
       latest_diary = diff_tracker
     end
 
@@ -31,33 +31,27 @@ module RoughDiary
     module Difference
       module_function
 
-      def diff_merge(level)
-        raise ArgumentError, 'Invalid merge level' unless level.between?(0, @fix_holders.size)
+      def diff_merge(base_holder, fix_holders, level: fix_holders.size)
+        raise ArgumentError, 'Invalid merge level' unless level.between?(0, fix_holders.size)
           
-        merged_diary = @base_holder.dup
+        merged_diary = base_holder.dup
+        next_diary = merged_diary
         level.times do |l|
-          merged_diary = _merge(merged_diary, @fix_holders[l])
+          next_diary = Marshal.load(Marshal.dump(base))
+          next_diary.data_content = Diff::LCS.patch(base.get(:content), fix.get(:edit_diffs))
+          merged_diary = next_diary
         end
 
         merged_diary
-    end
+      end
 
 
-    def all_merge() merge(@fix_holders.size) end
+      def diff_track(original_data_holder, changed_data_holder)
+        ret_fix = DataHolder::Fix.new(original_data_holder.get(:id))
+        ret_fix.data_edit_diffs = Diff::LCS.diff(original_data_holder.get(:content), changed_data_holder.get(:content))
 
-
-    private def _merge(base, fix)
-      ret = Marshal.load(Marshal.dump(base))
-      ret.data_content = Diff::LCS.patch(base.get(:content), fix.get(:edit_diffs))
-      ret
-    end
-
-
-    def track(original_data_holder, changed_data_holder)
-      ret_fix = DataHolder::Fix.new(original_data_holder.get(:id))
-      ret_fix.data_edit_diffs = Diff::LCS.diff(original_data_holder.get(:content), changed_data_holder.get(:content))
-
-      ret_fix
+        ret_fix
+      end
     end
   end
 end
