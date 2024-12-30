@@ -31,7 +31,7 @@ module RoughDiary
     module Difference
       module_function
 
-      def diff_merge(base_holder, fix_holders, level: fix_holders.size)
+      def merge(base_holder, fix_holders, level: fix_holders.size)
         raise ArgumentError, 'Invalid merge level' unless level.between?(0, fix_holders.size)
           
         merged_diary = base_holder.dup
@@ -46,7 +46,7 @@ module RoughDiary
       end
 
 
-      def diff_track(original_data_holder, changed_data_holder)
+      def get(original_data_holder, changed_data_holder)
         ret_fix = DataHolder::Fix.new(original_data_holder.get(:id))
         ret_fix.data_edit_diffs = Diff::LCS.diff(original_data_holder.get(:content), changed_data_holder.get(:content))
 
@@ -55,3 +55,4 @@ module RoughDiary
     end
   end
 end
+

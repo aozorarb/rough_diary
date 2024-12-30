@@ -83,7 +83,7 @@ module RoughDiary
 
     private def create_database_if_not_exist_fix
       @database.execute <<~SQL
-        CREATE TABLE IF NOT EXISTS diary_fixies (
+        CREATE TABLE IF NOT EXISTS diary_fixes (
           id INTEGER PRIMARY KEY,  
           create_date TEXT,
           fix_diary_id INTEGER,
@@ -95,7 +95,7 @@ module RoughDiary
         CREATE TABLE IF NOT EXISTS diary_fix_tags (
           id INTEGER,
           tag TEXT,
-          FOREIGN KEY (id) REFERENCES diary_fixies(id),
+          FOREIGN KEY (id) REFERENCES diary_fixes(id),
           UNIQUE(id, tag)
         )
       SQL
@@ -133,9 +133,9 @@ class RoughDiary::DatabaseManager
     end
 
 
-    def collect_diary_same_id(id)
+    def collect_diary_by_id(id)
       target_diary = @database.execute <<~SQL
-        SELECT * FROM diary_entries WHERE id == #{id}
+        SELECT * FROM diary_entries WHERE id = #{id}
       SQL
 
       normal_data_holder = DataHolder::Normal.new
@@ -143,11 +143,11 @@ class RoughDiary::DatabaseManager
 
       fix_data_holders = []
 
-      diary_fixies = @database.execute <<~SQL
-        SELECT * FROM diary_fixies WHERE fix_diary_id == #{id} ORDER BY create_date
+      diary_fixes = @database.execute <<~SQL
+        SELECT * FROM diary_fixes WHERE fix_diary_id == #{id} ORDER BY create_date
       SQL
       
-      diary_fixies.each do |fix|
+      diary_fixes.each do |fix|
         fix_data_holder = DataHolder::Fix.new(nil)
         fix_data_holder.create_from_database(fix)
         fix_data_holders << fix_data_holder
@@ -158,6 +158,14 @@ class RoughDiary::DatabaseManager
 
 
     def register() raise NotImplementedError end
+
+
+    def execute(query)
+      @database.execute(
+        SQLite3::Database.quote(query)
+      )
+    end
+
 
   end
 
@@ -223,9 +231,9 @@ class RoughDiary::DatabaseManager
   class Fix < Base
     include RoughDiary
 
-    private def insert_diary_fixies
+    private def insert_diary_fixes
       sql = <<~SQL
-        INSERT INTO diary_fixies (
+        INSERT INTO diary_fixes (
           create_date, fix_diary_id, edit_diffs
         ) VALUES (
           ?, ?, ?
@@ -246,7 +254,7 @@ class RoughDiary::DatabaseManager
     def register
       check_data_holder
       @database.transaction do
-        insert_diary_fixies
+        insert_diary_fixes
         set_data_id_last_inserted
       end
     end

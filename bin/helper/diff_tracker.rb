@@ -9,7 +9,7 @@ def setup_helper
   dh2.data_id = 1
   dh2.data_content = 'recollect lines'
 
-  fix = DiaryDifferenceTracker.track(dh1, dh2)
+  fix = DirayUtils::Difference.get(dh1, dh2)
 
 
   binding
