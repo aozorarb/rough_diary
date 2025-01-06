@@ -2,6 +2,8 @@ module RoughDiary
   module Config
     EDITOR = 'vim'
 
+    PAGER = 'less'
+
     SAVEDATA_DIR = File.expand_path('~/.diary/article')
 
     DEFAULT_DIARY_TITLE = 'note'
@@ -16,5 +18,8 @@ module RoughDiary
     NEED_FOLLOW_DIARY_TYPE = {
       fix:    true,
     }
+
   end
 end
+
+

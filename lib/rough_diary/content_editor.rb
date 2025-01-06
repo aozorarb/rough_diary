@@ -8,6 +8,7 @@ module RoughDiary
     def initialize(data_holder)
       @data_holder = data_holder
       @tempfile = Tempfile.create('diary', mode: 666)
+      @tempfile.write data_holder.get(:content)
       @tempfile.close
     end
 
