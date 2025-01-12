@@ -1,7 +1,8 @@
 == Fix-delete
 === delete
-- [ ] Delete DataHolder::Fix
-- [ ] Delete DiaryUtils::Difference
+- [ ] DataHolder::Fix
+- [ ] DiaryUtils::Difference
+- [ ] DatabaseManager::Fix
 
 === fix
 - [ ] DatabaseManager
