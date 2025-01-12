@@ -103,7 +103,7 @@ class DatabaseManager::Normal::Test < Minitest::Test
   end
 
 
-  def test_base_collect_diary_same_id
+  def test_base_collect_diary_by_id
     data_class = Data.define(:create_date, :title, :content)
     data = data_class.new('2000-01-01 00:00:00', 'test', 'goodbye')
     @mock_data_holder.expect :database_format, data
@@ -118,7 +118,7 @@ class DatabaseManager::Normal::Test < Minitest::Test
       )
     SQL
 
-    res = @manager.collect_diary_same_id(1)
+    res = @manager.collect_diary_by_id(1)
 
     normal, fix = res
     fix = fix[0]
@@ -135,48 +135,4 @@ class DatabaseManager::Normal::Test < Minitest::Test
   end
 
 end
-
-
-
-class DatabaseManager::Fix::Test < Minitest::Test
-  def setup
-    tmpfile = Tempfile.create
-    @db_manager = DatabaseManager.new(tmpfile.path)
-    @db_manager.manager = DatabaseManager::Fix
-    @mock_data_holder = Minitest::Mock.new
-    @manager = @db_manager.v_get(:@manager)
-    @db = @manager.v_get(:@database)
-
-    @db_manager.data_holder = @mock_data_holder
-  end
-
-
-  def test_initialize
-    created_tables =
-      @db.execute "SELECT * FROM sqlite_master WHERE name == 'diary_fixies'"
-
-    created_tables = created_tables[0]
-    
-    assert_equal 'diary_fixies', created_tables['name']
-  end
-
-
-  def test_insert_diary_fixies
-    data_class = Data.define(:create_date, :fix_diary_id, :edit_diffs)
-    data = data_class.new('2000-01-01 00:00:00', 1, 'edit test')
-    @mock_data_holder.expect :database_format, data
-
-    @manager.send(:insert_diary_fixies)
-
-    res =
-      @db.execute('SELECT * FROM diary_fixies')[0]
-
-    assert_equal 1, res['id']
-    assert_equal '2000-01-01 00:00:00', res['create_date']
-    assert_equal 1, res['fix_diary_id']
-    assert_equal 'edit test', res['edit_diffs']
-  end
-
-end
-
 

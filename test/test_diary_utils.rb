@@ -31,3 +31,4 @@ class DiaryUtils::Test < Minitest::Test
   end
 
 end
+

@@ -1,0 +1,9 @@
+== Fix-delete
+=== delete
+- [ ] Delete DataHolder::Fix
+- [ ] Delete DiaryUtils::Difference
+
+=== fix
+- [ ] DatabaseManager
+- [ ] Editor
+
