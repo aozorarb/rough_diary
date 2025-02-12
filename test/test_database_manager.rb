@@ -5,46 +5,28 @@ require 'tempfile'
 
 include RoughDiary
 
+CORRECT_DATA = {
+  id: 1,
+  create_date: '2000-01-01 00:00:00 +0900',
+  update_date: '2000-01-01 00:00:00 +0900',
+  title: 'title',
+  content: '#tag'
+}
 
 class DatabaseManager::Test < Minitest::Test
   def setup
     tmpfile = Tempfile.create
     @db_manager = DatabaseManager.new(tmpfile.path)
-  end
+    @data_holder = DataHolder.new
+    @db = @db_manager.v_get(:@database)
 
+    @data_holder.v_set(:@id, CORRECT_DATA[:id])
+    @data_holder.v_set(:@create_date, CORRECT_DATA[:create_date])
+    @data_holder.v_set(:@update_date, CORRECT_DATA[:update_date])
+    @data_holder.v_set(:@title, CORRECT_DATA[:title])
+    @data_holder.v_set(:@content, CORRECT_DATA[:content])
 
-  def test_manager=
-    assert @db_manager.manager = DatabaseManager::Normal
-    assert @db_manager.manager = DatabaseManager::Fix
-
-    assert_raises(ArgumentError) { @db_manager.manager = DataHolder::Normal }
-  end
-
-
-  def test_method_missing
-    @db_manager.manager = DatabaseManager::Normal
-    @db_manager.data_holder = Minitest::Mock.new
-
-    @db_manager.instance_variable_get(:@manager).stub :register, :true do
-      assert @db_manager.register
-    end
-    assert_raises(NoMethodError) { @db_manager.not_found_method }
-  end
-
-end
-
-
-
-class DatabaseManager::Normal::Test < Minitest::Test
-  def setup
-    tmpfile = Tempfile.create
-    @db_manager = DatabaseManager.new(tmpfile.path)
-    @db_manager.manager = DatabaseManager::Normal
-    @mock_data_holder = Minitest::Mock.new
-    @manager = @db_manager.v_get(:@manager)
-    @db = @manager.v_get(:@database)
-
-    @db_manager.data_holder = @mock_data_holder
+    @db_manager.data_holder = @data_holder
   end
 
 
@@ -59,79 +41,40 @@ class DatabaseManager::Normal::Test < Minitest::Test
 
 
   def test_insert_diary_entries
-    data_class = Data.define(:create_date, :title, :content)
-    data = data_class.new('2000-01-01 00:00:00', 'test', 'goodbye')
-    @mock_data_holder.expect :database_format, data
 
-    @manager.send(:insert_diary_entries)
+    @db_manager.send(:insert_diary_entries)
 
-    res =
-      @db.execute('SELECT * FROM diary_entries')[0]
+    res = @db.execute('SELECT * FROM diary_entries')[0]
 
-    assert_equal 1, res['id']
-    assert_equal '2000-01-01 00:00:00', res['create_date']
-    assert_equal 'test', res['title']
-    assert_equal 'goodbye', res['content']
+    assert_equal CORRECT_DATA[:id], res['id']
+    assert_equal CORRECT_DATA[:create_date], res['create_date']
+    assert_equal CORRECT_DATA[:update_date], res['update_date']
+    assert_equal CORRECT_DATA[:title], res['title']
+    assert_equal CORRECT_DATA[:content], res['content']
   end
 
 
   def test_insert_diary_tags
-    # I cannot use mock for get(:content) #=> '#hello'
-    # So use original data_holder mock
-    original_mock_data_holder =
-      Class.new do
-        def initialize
-          @get_val = {
-            id: 1,
-            content: '#hello'
-          }
-        end
+    @db_manager.send(:insert_diary_tags)
 
-        def get(arg) @get_val[arg] end
-      end
-    
-    org_mock_data_holder = original_mock_data_holder.new
-    @db_manager.data_holder = org_mock_data_holder
-    @manager.send(:insert_diary_tags)
+    res = @db.execute('SELECT * FROM diary_tags')[0]
 
-    res =
-      @db.execute('SELECT * FROM diary_tags')[0]
-
-    assert_equal 1, res['id']
-    assert_equal '#hello', res['tag']
-
+    assert_equal CORRECT_DATA[:id], res['id']
+    assert_equal "#tag", res['tag']
   end
 
 
-  def test_base_collect_diary_by_id
-    data_class = Data.define(:create_date, :title, :content)
-    data = data_class.new('2000-01-01 00:00:00', 'test', 'goodbye')
-    @mock_data_holder.expect :database_format, data
+  def test_collect_diary_by_id
+    @db_manager.send(:insert_diary_entries)
 
-    @manager.send(:insert_diary_entries)
+    res_dh = @db_manager.collect_diary_by_id(CORRECT_DATA[:id])
+    parsed_create_date = Time.parse(CORRECT_DATA[:create_date])
+    parsed_update_date = Time.parse(CORRECT_DATA[:update_date])
 
-    @db.execute <<~SQL
-      INSERT INTO diary_fixies (
-        create_date, fix_diary_id, edit_diffs
-      ) VALUES (
-        '2000-01-01 00:00:00', 1, 'edit test'
-      )
-    SQL
-
-    res = @manager.collect_diary_by_id(1)
-
-    normal, fix = res
-    fix = fix[0]
-
-    sample_time = Time.local(2000, 1, 1)
-
-    assert_equal sample_time, normal.get(:create_date)
-    assert_equal 'test', normal.get(:title)
-    assert_equal 'goodbye', normal.get(:content)
-
-    assert_equal sample_time, fix.get(:create_date)
-    assert_equal 1, fix.get(:fix_diary_id)
-    assert_equal 'edit test', fix.get(:edit_diffs)
+    assert_equal parsed_create_date, res_dh.create_date
+    assert_equal parsed_update_date, res_dh.update_date
+    assert_equal CORRECT_DATA[:title], res_dh.title
+    assert_equal CORRECT_DATA[:content], res_dh.content
   end
 
 end

@@ -25,10 +25,10 @@ class Core::Test < Minitest::Test
 
   def test_read
     mock_reader = Minitest::Mock.new
-    mock_reader.expect :read, true
+    mock_reader.expect :read, true, [1]
 
     Reader.stub :new, mock_reader do
-      @core.read
+      @core.read(1)
     end
 
     mock_reader.verify

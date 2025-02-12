@@ -7,7 +7,7 @@ class TestWriter < Minitest::Test
     @mock_content_generator = Minitest::Mock.new
     @mock_database_manager = Minitest::Mock.new
     
-    @mock_database_manager.expect :data_holder=, true, [RoughDiary::DataHolder::Normal]
+    @mock_database_manager.expect :data_holder=, true, [RoughDiary::DataHolder]
     @writer = RoughDiary::Writer.new(@mock_database_manager)
   end
 

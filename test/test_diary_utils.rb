@@ -8,20 +8,17 @@ class DiaryUtils::Test < Minitest::Test
   include DiaryUtils
 
   def test_tag_collect
-    mock_nil_data_holder = Minitest::Mock.new
-    mock_nil_data_holder.expect :get, nil, [:content]
+    mock_nil_dh = Minitest::Mock.new
+    mock_nil_dh.expect :content, nil
 
-    assert_raises(ArgumentError) { tag_collect(mock_nil_data_holder) }
+    mock_ok_dh = Minitest::Mock.new
+    2.times { mock_ok_dh.expect :content, '#hello #世界' }
 
-    mock_data_holder = Minitest::Mock.new
-    msg = '#hello #世界'
-    mock_data_holder.expect :get, msg, [:content]
-    mock_data_holder.expect :get, msg, [:content]
+    assert_raises(ArgumentError) { tag_collect(mock_nil_dh) }
+    assert_equal ['#hello', '#世界'], tag_collect(mock_ok_dh)
 
-    assert_equal ['#hello', '#世界'], tag_collect(mock_data_holder)
-
-    mock_nil_data_holder.verify
-    mock_data_holder.verify
+    mock_nil_dh.verify
+    mock_ok_dh.verify
   end
 
 
