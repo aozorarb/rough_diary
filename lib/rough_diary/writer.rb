@@ -5,7 +5,7 @@ module RoughDiary
     include RoughDiary
     
     def initialize(database_manager, data_holder: nil)
-      @data_holder = data_holder || DataHolder::Normal.new
+      @data_holder = data_holder || DataHolder.new
       @database_manager = database_manager
       @content_generator = ContentGenerator.new(@data_holder)
 

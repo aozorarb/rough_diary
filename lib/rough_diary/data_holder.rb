@@ -2,106 +2,51 @@ require 'yaml/store'
 require 'time'
 
 module RoughDiary
-  module DataHolder
-    class Base
+  class DataHolder
+    def initialize
+      @id = nil
+      @create_date = Time.now
+      @update_date = @create_date
+      @title = RoughDiary::Config::DEFAULT_DIARY_TITLE
+      @content = nil
+    end
 
-      def initialize(*args)
-        @data = {}
+    attr_reader   :create_date, :update_date, :content
+    attr_accessor :id, :title
 
-        data_assign(*args)
+
+    def self.create_from_database(sql_result)
+      data_holder = self.allocate
+      sql_res = sql_result.dup
+      sql_res['create_date'] = Time.parse(sql_res['create_date'])
+      sql_res['update_date'] = Time.parse(sql_res['update_date'])
+      sql_res.each do |key, val|
+        var = "@#{key}".to_sym
+        data_holder.instance_variable_set(var, val)
       end
 
-
-      def create_from_database(sql_result)
-        sql_result['create_date'] = Time.parse(sql_result['create_date'])
-        sql_result.each do |key, val|
-          @data[key.to_sym] = val
-        end
-      end
-
-
-      def get(key)
-        if @data.key?(key)
-          @data[key]
-        else
-          raise ArgumentError, "Invalid key for DataHolder: #{key}"
-        end
-      end
-
-
-      def data_id=(val) @data[:id] = val end
-
-
-      private def data_valid?
-        @data.all? {|val| val }
-      end
-
-
-
-      private def data_assign() raise NotImplementedError end
-      def database_format()     raise NotImplementedError end
-
+      data_holder
     end
 
 
+    def database_format
+      formated_data = Data.define(
+        :create_date, :update_date, :title, :content
+      )
 
-    class Normal < Base
-      private def data_assign
-        @data[:id]          = nil
-        @data[:create_date] = Time.now
-        @data[:title]       = RoughDiary::Config::DEFAULT_DIARY_TITLE
-        @data[:content]     = nil
-      end
-
-
-      def data_content=(val)  @data[:content] = val end
-      def data_title=(val)    @data[:title] = val end
-
-
-      def database_format
-        formated_data = Data.define(
-          :create_date, :title, :content
-        )
-
-        return_data = formated_data.new(
-          create_date:  @data[:create_date].getutc.strftime('%Y-%m-%d %H:%M:%S'),
-          title:        @data[:title].to_s,
-          content:      @data[:content].to_s
-        )
-        return_data
-      end
-
-
+      return_data = formated_data.new(
+        create_date:  @create_date.to_s,
+        update_date:  @update_date.to_s,
+        title:        @title.to_s,
+        content:      @content.to_s
+      )
+      return_data
     end
 
 
-
-    class Fix < Base
-      private def data_assign(fix_diary_id)
-        @data[:id]            = nil
-        @data[:create_date]   = Time.now
-        @data[:fix_diary_id]  = fix_diary_id
-        @data[:edit_diffs]  = nil
-      end
-
-
-      def data_id=(val)         @data[:id] = val         end
-      def data_edit_diffs=(val) @data[:edit_diffs] = val end
-
-
-      def database_format
-        formated_savedata = Data.define(
-          :create_date, :fix_diary_id, :edit_diffs
-        )
-
-        return_savedata = formated_savedata.new(
-          create_date:  @data[:create_date].getutc.strftime('%Y-%m-%d %H:%M:%S'),
-          fix_diary_id: @data[:fix_diary_id].to_i,
-          edit_diffs: @data[:edit_diffs].to_s
-        )
-        return_savedata
-      end
-
+    def content=(content)
+      @content = content
+      @update_date = Time.now
     end
   end
 end

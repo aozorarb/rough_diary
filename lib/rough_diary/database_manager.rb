@@ -16,47 +16,28 @@ module RoughDiary
 
       @database = SQLite3::Database.new(db_path)
       @database.results_as_hash = true
+      @data_holder = nil
+
       ObjectSpace.define_finalizer(self, DatabaseManager.db_finalize(@database))
 
-      @manager = nil
       create_database_if_not_exist
     end
+
+    attr_writer :data_holder
 
 
     def self.db_finalize(database)
       proc { database&.close }
     end
 
-    
-    def manager=(klass)
-      @manager = klass.new(@database)
-    rescue
-      raise ArgumentError, 'Specify DatabaseManager::{Normal, Fix}'
-    end
-
-
-    def method_missing(method, *args)
-      @manager&.public_send(method, *args)
-    end
-
-
-    def respond_to_missing?(sym, include_private)
-      @manager&.respond_to?(sym) ? true : super
-    end
-
 
     private def create_database_if_not_exist
-      create_database_if_not_exist_normal
-      create_database_if_not_exist_fix
-    end
-
-
-    private def create_database_if_not_exist_normal
       # mainly database
       @database.execute <<~SQL
         CREATE TABLE IF NOT EXISTS diary_entries (
           id INTEGER PRIMARY KEY,
           create_date TEXT,
+          update_date TEXT,
           title TEXT,
           content TEXT
         );
@@ -81,123 +62,19 @@ module RoughDiary
     end
 
 
-    private def create_database_if_not_exist_fix
-      @database.execute <<~SQL
-        CREATE TABLE IF NOT EXISTS diary_fixes (
-          id INTEGER PRIMARY KEY,  
-          create_date TEXT,
-          fix_diary_id INTEGER,
-          edit_diffs TEXT
-        );
-      SQL
-
-      @database.execute <<~SQL
-        CREATE TABLE IF NOT EXISTS diary_fix_tags (
-          id INTEGER,
-          tag TEXT,
-          FOREIGN KEY (id) REFERENCES diary_fixes(id),
-          UNIQUE(id, tag)
-        )
-      SQL
-    end
-    
-  end
-end
-
-
-
-class RoughDiary::DatabaseManager
-
-  class Base
-    include RoughDiary
-
-    def initialize(database)
-      @database = database
-    end
-
-
-    def data_holder=(val) @data_holder = val end
-
-
-    private def check_data_holder
-      unless @data_holder
-        raise InstanceVariableNilError,
-        "Please set @data_holder" unless @data_holder
-      end
-    end
-
-
-    private def set_data_id_last_inserted
-      check_data_holder
-      @data_holder.data_id = @database.last_insert_row_id
-    end
-
-
-    def collect_diary_by_id(id)
-      target_diary = @database.execute <<~SQL
-        SELECT * FROM diary_entries WHERE id = #{id}
-      SQL
-
-      normal_data_holder = DataHolder::Normal.new
-      normal_data_holder.create_from_database(target_diary[0])
-
-      fix_data_holders = []
-
-      diary_fixes = @database.execute <<~SQL
-        SELECT * FROM diary_fixes WHERE fix_diary_id == #{id} ORDER BY create_date
-      SQL
-      
-      diary_fixes.each do |fix|
-        fix_data_holder = DataHolder::Fix.new(nil)
-        fix_data_holder.create_from_database(fix)
-        fix_data_holders << fix_data_holder
-      end
-
-      [normal_data_holder, fix_data_holders]
-    end
-
-
-    def register() raise NotImplementedError end
-
-
-    def execute(query)
-      @database.execute(
-        SQLite3::Database.quote(query)
-      )
-    end
-
-
-  end
-
-
-
-  class Normal < Base
-    include RoughDiary
-
-    def register
-      check_data_holder
-
-      @database.transaction do
-        insert_diary_entries
-        set_data_id_last_inserted
-        insert_diary_tags
-      end
-    end
-
-
     private def insert_diary_entries
       sql = <<~SQL
         INSERT INTO diary_entries (
-          create_date, title, content
+          create_date, update_date, title, content
         ) VALUES (
-          ?, ?, ?
+          ?, ?, ?, ?
         )
       SQL
-
       data = @data_holder.database_format
 
       @database.execute sql, [
         data.create_date,
+        data.update_date,
         data.title,
         data.content
       ]
@@ -217,47 +94,51 @@ class RoughDiary::DatabaseManager
 
       tags.each do |tag|
         @database.execute sql, [
-          @data_holder.get(:id),
+          @data_holder.id,
           tag
         ]
       end
       @database
     end
 
-  end
 
 
+    private def check_data_holder
+      raise InstanceVariableNilError,
+            "Please set @data_holder" unless @data_holder
+    end
 
-  class Fix < Base
-    include RoughDiary
 
-    private def insert_diary_fixes
-      sql = <<~SQL
-        INSERT INTO diary_fixes (
-          create_date, fix_diary_id, edit_diffs
-        ) VALUES (
-          ?, ?, ?
-        )
-      SQL
+    private def set_data_id_last_inserted
+      check_data_holder
+      @data_holder.id = @database.last_insert_row_id
+    end
 
-      data = @data_holder.database_format
 
-      @database.execute sql, [
-        data.create_date,
-        data.fix_diary_id,
-        data.edit_diffs
-      ]
-      @database
+    def execute(query)
+      @database.execute(
+        SQLite3::Database.quote(query)
+      )
     end
 
 
     def register
       check_data_holder
+
       @database.transaction do
-        insert_diary_fixes
+        insert_diary_entries
         set_data_id_last_inserted
+        insert_diary_tags
       end
     end
-  end
 
+
+    def collect_diary_by_id(id)
+      target_diary = @database.execute <<~SQL
+        SELECT * FROM diary_entries WHERE id = #{id}
+      SQL
+      
+      DataHolder.create_from_database(target_diary[0])
+    end
+  end
 end

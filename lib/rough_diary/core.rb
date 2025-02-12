@@ -15,7 +15,6 @@ module RoughDiary
 
     def initialize
       @database_manager = DatabaseManager.new(Config::DATABASE_PATH)
-      @database_manager.manager = DatabaseManager::Normal
     end
     
     def write
