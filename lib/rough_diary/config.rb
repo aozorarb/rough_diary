@@ -10,15 +10,6 @@ module RoughDiary
 
     DATABASE_PATH = File.expand_path('~/.diary/database.sqlite3')
 
-    VALID_DIARY_TYPE = {
-      normal: true,
-      fix:    true,
-    }
-
-    NEED_FOLLOW_DIARY_TYPE = {
-      fix:    true,
-    }
-
   end
 end
 
