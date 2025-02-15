@@ -7,6 +7,7 @@ module RoughDiary
   class ContentGenerator
     def initialize(data_holder, editor)
       @data_holder = data_holder
+      @editor = editor
       @tempfile = Tempfile.create('diary', mode: 666)
       @tempfile.write(data_holder.content)
       @tempfile.close
@@ -19,10 +20,8 @@ module RoughDiary
       @editor.edit(@tempfile)
       @data_holder.title = @editor.diary_title
       @tempfile.reopen(@tempfile.path, 'r')
-      @data_holder.data_content = @tempfile.read
-      @database_manager.register
+      @data_holder.content = @tempfile.read
     end
-
 
   end
 end
