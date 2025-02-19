@@ -6,11 +6,11 @@ PATH
 GEM
   remote: https://rubygems.org/
   specs:
+    configatron (4.5.1)
     date (3.4.1)
     debug (1.9.2)
       irb (~> 1.10)
       reline (>= 0.3.8)
-    diff-lcs (1.5.1)
     io-console (0.8.0)
     irb (1.15.1)
       pp (>= 0.6.0)
@@ -39,8 +39,8 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  configatron (~> 4.5.1)
   debug (~> 1.9.1)
-  diff-lcs (~> 1.5)
   minitest (~> 5.25)
   mutex_m (~> 0.2.0)
   rake (~> 13.0)

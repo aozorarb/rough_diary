@@ -17,7 +17,7 @@ module RoughDiary
 
       
       def diary_title
-        RoughDiary::Config::DEFAULT_DIARY_TITLE
+        configatron.system.default_diary_title
       end
     end
   end

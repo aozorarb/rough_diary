@@ -7,7 +7,7 @@ module RoughDiary
       @id = nil
       @create_date = Time.now
       @update_date = @create_date
-      @title = RoughDiary::Config::DEFAULT_DIARY_TITLE
+      @title = configatron.system.default_diary_title
       @content = nil
     end
 

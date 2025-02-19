@@ -7,7 +7,9 @@ Kernel.module_exec do
   alias_method :v_set ,:instance_variable_set
 end
 
-require "rough_diary"
+require 'rough_diary'
+require 'configatron'
+require 'simple_cli'
 require 'debug'
 require 'minitest/mock'
 require "minitest/autorun"

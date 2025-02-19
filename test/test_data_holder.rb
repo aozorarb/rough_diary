@@ -16,7 +16,7 @@ class DataHolder::Test < Minitest::Test
   def test_initialize
     assert_nil @holder.id
     assert_instance_of Time, @holder.create_date
-    assert_equal Config::DEFAULT_DIARY_TITLE, @holder.title
+    assert_equal configatron.system.default_diary_title, @holder.title
     assert_nil @holder.content
   end
 
@@ -26,7 +26,7 @@ class DataHolder::Test < Minitest::Test
 
     data = @holder.database_format
     assert_match $create_date_regexp, data.create_date
-    assert_equal Config::DEFAULT_DIARY_TITLE, data.title
+    assert_equal configatron.system.default_diary_title, data.title
     assert_equal 'test', data.content
   end
 

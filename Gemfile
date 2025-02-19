@@ -16,4 +16,4 @@ gem 'debug', '~> 1.9.1'
 
 gem 'sqlite3', '~> 2.0.1'
 
-gem 'diff-lcs', '~> 1.5'
+gem 'configatron', '~> 4.5.1'

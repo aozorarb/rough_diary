@@ -1,4 +1,3 @@
-require_relative 'config'
 require_relative 'error'
 require 'tempfile'
 
@@ -12,8 +11,6 @@ module RoughDiary
       @tempfile.write(data_holder.content)
       @tempfile.close
     end
-
-    
 
 
     def run
