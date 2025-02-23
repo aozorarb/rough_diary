@@ -1,6 +1,8 @@
 # RoughDiary
 
 A diary writer/reader without care.
+[x] Writer
+[ ] Reader/Pager
 
 DEVELOPING
 
