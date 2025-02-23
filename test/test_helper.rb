@@ -9,7 +9,6 @@ end
 
 require 'rough_diary'
 require 'configatron'
-require 'simple_cli'
 require 'debug'
 require 'minitest/mock'
 require "minitest/autorun"
