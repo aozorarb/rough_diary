@@ -1,7 +1,8 @@
 #!/usr/bin/env ruby
 require 'rough_diary'
+require 'simple_ui'
 
-core = RoughDiary::Core.new
+core = SimpleUi::Core.new
 
 core.write
 
