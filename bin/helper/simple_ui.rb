@@ -1,7 +1,7 @@
 include RoughDiary
 include SimpleUi
 def setup_helper
-  core = SimpleUI::Core.new
+  core = SimpleUi::Core.new
 
   db_manager = core.instance_variable_get(:@db_manager)
 

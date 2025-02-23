@@ -2,10 +2,10 @@ require 'rough_diary'
 require 'configatron'
 require_relative 'editor'
 
-class SimpleUI
+module SimpleUi
   class Core
     def initialize
-      @config_path = File.expand_path('~/.config/rough_diary/config.yaml')
+      @config_path = File.expand_path('~/.config/rough_diary/config.yml')
       define_config
 
       @db_manager = RoughDiary::DatabaseManager.new(configatron.system.database_path)
@@ -18,7 +18,7 @@ class SimpleUI
       configatron.simple_ui.pager = 'view'
 
       unless File.exist?(@config_path)
-        warn 'Error: config.yml(#{@config_path}) is not exist. Use default'
+        warn "Error: config.yml(#{@config_path}) is not exist. Use default"
       else
         config = YAML.load_file(@config_path)
         configatron.configure_from_hash(config)

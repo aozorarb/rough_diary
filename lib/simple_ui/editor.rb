@@ -1,11 +1,11 @@
 module SimpleUi
   class Editor < RoughDiary::Editor::Base
     def diary_title
-      puts "Please enter diary title (if none, title will be #{configatron.system.diary_default_title})"
+      puts "Please enter diary title (if none, title will be #{configatron.system.default_diary_title})"
       print 'Diary title: '
       title = gets.chomp
 
-      title.empty? ? title : configatron.system.diary_default_title
+      title.empty? ? configatron.system.default_diary_title : title 
     end
 
 
