@@ -1,5 +1,3 @@
-require 'diff-lcs'
-
 module RoughDiary
   module DiaryUtils
     module_function

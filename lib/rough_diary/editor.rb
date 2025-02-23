@@ -4,13 +4,6 @@ require_relative 'error'
 module RoughDiary
   class Editor
     class Base
-      def initialize(data_holder)
-        @data_holder = data_holder
-
-        @database_manager.data_holder = @data_holder
-      end
-
-      
       def edit
         raise NotImplementedError
       end
