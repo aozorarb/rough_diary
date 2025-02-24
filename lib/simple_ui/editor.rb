@@ -11,10 +11,10 @@ module SimpleUi
 
     def edit(file)
       path = file.path
-      if DiaryUtils.valid_editor?(configatron.simple_ui.editor)
+      if RoughDiary::DiaryUtils.valid_editor?(configatron.simple_ui.editor)
         system("#{configatron.simple_ui.editor} #{path}")
       else
-        raise InvalidConfigrationError, "Invalid editor: #{configatron.simple_ui.editor}"
+        raise RoughDiary::InvalidConfigrationError, "Invalid editor: #{configatron.simple_ui.editor}"
       end
     end
   end
