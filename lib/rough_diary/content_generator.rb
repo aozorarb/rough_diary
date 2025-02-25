@@ -13,9 +13,9 @@ module RoughDiary
     end
 
 
-    def run
+    def run(need_title: true)
       @editor.edit(@tempfile)
-      @data_holder.title = @editor.diary_title
+      @data_holder.title = @editor.diary_title if need_title
       @tempfile.reopen(@tempfile.path, 'r')
       @data_holder.content = @tempfile.read
     end
