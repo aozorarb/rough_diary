@@ -5,7 +5,7 @@ module RoughDiary
   class DataHolder
     def initialize
       @id = nil
-      @create_date = Time.now
+      @create_date = nil
       @update_date = @create_date
       @title = configatron.system.default_diary_title
       @content = nil
@@ -31,10 +31,11 @@ module RoughDiary
 
     def database_format
       formated_data = Data.define(
-        :create_date, :update_date, :title, :content
+        :id, :create_date, :update_date, :title, :content
       )
 
       return_data = formated_data.new(
+        id:           @id.to_s,
         create_date:  @create_date.to_s,
         update_date:  @update_date.to_s,
         title:        @title.to_s,
@@ -45,8 +46,12 @@ module RoughDiary
 
 
     def content=(content)
+      if @create_date.nil?
+        @create_date = @update_date = Time.new
+      else
+        @update_date = Time.now
+      end
       @content = content
-      @update_date = Time.now
     end
   end
 end

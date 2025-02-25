@@ -16,14 +16,11 @@ module RoughDiary
 
       @database = SQLite3::Database.new(db_path)
       @database.results_as_hash = true
-      @data_holder = nil
 
       ObjectSpace.define_finalizer(self, DatabaseManager.db_finalize(@database))
 
       create_database_if_not_exist
     end
-
-    attr_writer :data_holder
 
 
     def self.db_finalize(database)
@@ -62,7 +59,7 @@ module RoughDiary
     end
 
 
-    private def insert_diary_entries
+    private def insert_diary_entries(data_holder)
       sql = <<~SQL
         INSERT INTO diary_entries (
           create_date, update_date, title, content
@@ -70,7 +67,7 @@ module RoughDiary
           ?, ?, ?, ?
         )
       SQL
-      data = @data_holder.database_format
+      data = data_holder.database_format
 
       @database.execute sql, [
         data.create_date,
@@ -82,7 +79,31 @@ module RoughDiary
     end
 
 
-    private def insert_diary_tags
+    private def update_diary_entries(data_holder)
+      data = data_holder.database_format
+      binding.break
+      sql = <<~SQL
+        UPDATE diary_entries
+        SET update_date = "#{data.update_date}", content = "#{data.content}"
+        WHERE id = "#{data.id}"
+      SQL
+      @database.execute sql
+      @database
+    end
+
+
+    private def update_diary_tags(data_holder)
+      sql = <<~SQL
+        DELETE FROM diary_tags
+        WHERE id = "#{data_holder.id}"
+      SQL
+      @database.execute sql
+
+      insert_diary_tags(data_holder)
+    end
+
+
+    private def insert_diary_tags(data_holder)
       sql = <<~SQL
       INSERT INTO diary_tags
         (id, tag)
@@ -90,11 +111,11 @@ module RoughDiary
         (?, ?)
       SQL
 
-      tags = DiaryUtils.tag_collect(@data_holder)
+      tags = DiaryUtils.tag_collect(data_holder)
 
       tags.each do |tag|
         @database.execute sql, [
-          @data_holder.id,
+          data_holder.id,
           tag
         ]
       end
@@ -102,16 +123,8 @@ module RoughDiary
     end
 
 
-
-    private def check_data_holder
-      raise InstanceVariableNilError,
-            "Please set @data_holder" unless @data_holder
-    end
-
-
-    private def set_data_id_last_inserted
-      check_data_holder
-      @data_holder.id = @database.last_insert_row_id
+    private def data_id_last_inserted
+      @database.last_insert_row_id
     end
 
 
@@ -122,13 +135,19 @@ module RoughDiary
     end
 
 
-    def register
-      check_data_holder
-
+    def register(data_holder)
       @database.transaction do
-        insert_diary_entries
-        set_data_id_last_inserted
-        insert_diary_tags
+        insert_diary_entries(data_holder)
+        data_holder.id = @database.last_insert_row_id
+        insert_diary_tags(data_holder)
+      end
+    end
+
+
+    def update(data_holder)
+      @database.transaction do
+        update_diary_entries(data_holder)
+        update_diary_tags(data_holder)
       end
     end
 

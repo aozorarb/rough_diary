@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    rough_diary (0.1.0)
+    rough_diary (0.2.0)
 
 GEM
   remote: https://rubygems.org/
