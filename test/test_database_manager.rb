@@ -26,7 +26,6 @@ class DatabaseManager::Test < Minitest::Test
     @data_holder.v_set(:@title, CORRECT_DATA[:title])
     @data_holder.v_set(:@content, CORRECT_DATA[:content])
 
-    @db_manager.data_holder = @data_holder
   end
 
 
@@ -42,7 +41,7 @@ class DatabaseManager::Test < Minitest::Test
 
   def test_insert_diary_entries
 
-    @db_manager.send(:insert_diary_entries)
+    @db_manager.send(:insert_diary_entries, @data_holder)
 
     res = @db.execute('SELECT * FROM diary_entries')[0]
 
@@ -55,7 +54,7 @@ class DatabaseManager::Test < Minitest::Test
 
 
   def test_insert_diary_tags
-    @db_manager.send(:insert_diary_tags)
+    @db_manager.send(:insert_diary_tags, @data_holder)
 
     res = @db.execute('SELECT * FROM diary_tags')[0]
 
@@ -65,7 +64,7 @@ class DatabaseManager::Test < Minitest::Test
 
 
   def test_collect_diary_by_id
-    @db_manager.send(:insert_diary_entries)
+    @db_manager.send(:insert_diary_entries, @data_holder)
 
     res_dh = @db_manager.collect_diary_by_id(CORRECT_DATA[:id])
     parsed_create_date = Time.parse(CORRECT_DATA[:create_date])

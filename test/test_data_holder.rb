@@ -15,7 +15,8 @@ class DataHolder::Test < Minitest::Test
 
   def test_initialize
     assert_nil @holder.id
-    assert_instance_of Time, @holder.create_date
+    assert_nil @holder.create_date
+    assert_nil @holder.update_date
     assert_equal configatron.system.default_diary_title, @holder.title
     assert_nil @holder.content
   end
@@ -26,13 +27,14 @@ class DataHolder::Test < Minitest::Test
 
     data = @holder.database_format
     assert_match $create_date_regexp, data.create_date
+    assert_match $create_date_regexp, data.update_date
     assert_equal configatron.system.default_diary_title, data.title
     assert_equal 'test', data.content
   end
 
 
   def test_create_from_database
-    db_res = {"id"=>1, "create_date"=>"2000-01-02 03:04:05 +0900", "update_date"=>"2000-01-02 03:04:05 +0900", "title"=>"Test 1", "content"=>"test of test\n"}
+    db_res = {"id"=>'1', "create_date"=>"2000-01-02 03:04:05 +0900", "update_date"=>"2000-01-02 03:04:05 +0900", "title"=>"Test 1", "content"=>"test of test\n"}
     expect_date = Time.parse(db_res['create_date'])
     data_holder = DataHolder.create_from_database(db_res)
 
@@ -45,11 +47,21 @@ class DataHolder::Test < Minitest::Test
 
   
   def test_content=
-    new_content = 'All delete'
-    @holder.content = new_content
+    @holder.content = 'First'
     neary_date = Time.now
 
-    diff = (@holder.update_date - neary_date)
-    assert_in_delta 0, diff
+    c_diff = (@holder.create_date - neary_date)
+    u_diff = (@holder.update_date - neary_date)
+    assert_in_delta 0, c_diff
+    assert_in_delta 0, u_diff
+
+    # twice 
+    sleep 1 
+    @holder.content = 'Second'
+    c2_diff = (@holder.create_date - neary_date)
+    u2_diff = (@holder.update_date - neary_date)
+    assert_in_delta c_diff, c2_diff
+    assert_in_delta u_diff, u2_diff, delta = 1.01
   end
+
 end
