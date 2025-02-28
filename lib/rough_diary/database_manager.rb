@@ -156,7 +156,8 @@ module RoughDiary
       target_diary = @database.execute <<~SQL
         SELECT * FROM diary_entries WHERE id = #{id}
       SQL
-      
+      return nil if target_diary.empty?
+
       DataHolder.create_from_database(target_diary[0])
     end
   end

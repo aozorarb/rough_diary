@@ -16,6 +16,7 @@ module RoughDiary
 
 
     def self.create_from_database(sql_result)
+      raise ArgumentError, 'Empty sql result given' if sql_result.empty?
       data_holder = self.allocate
       sql_res = sql_result.dup
       sql_res['create_date'] = Time.parse(sql_res['create_date'])

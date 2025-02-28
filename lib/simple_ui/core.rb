@@ -38,8 +38,8 @@ module SimpleUi
     end
 
 
-    def list(limit: 10, order_by: create_date)
-      diaries = @db_manager.execute("SELECT * FROM diary_entries ORDER BY #{create_date} LIMIT #{limit}")
+    def list(limit: 10, order_by: 'create_date')
+      diaries = @db_manager.execute("SELECT * FROM diary_entries ORDER BY #{order_by} LIMIT #{limit}")
       diaries.each do |diary|
         str = "#{diary['title']} (#{diary['id']})"
         puts str
@@ -54,17 +54,36 @@ module SimpleUi
       end
 
       data_holder = @db_manager.collect_diary_by_id(id)
-      if data_holder
-        puts "edit '#{data_holder.title}'"
-      else
-        warn "Not found to diary id #{data_holder.id}"
+      if data_holder.nil?
+        puts "diary id: #{id} is not found"
         exit 1
       end
+      puts "edit '#{data_holder.title}'"
+
       editor = SimpleUi::Editor.new
       content_generator = RoughDiary::ContentGenerator.new(data_holder, editor)
 
       content_generator.run(need_title: false)
       @db_manager.update(data_holder)
+    end
+
+
+    def read(id: nil)
+      if id.nil?
+        print 'Enter diary\'s id: '
+        id = gets.to_i
+      end
+
+      data_holder = @db_manager.collect_diary_by_id(id)
+      if data_holder.nil?
+        puts "diary id: #{id} is not found."
+        exit 1
+      end
+      puts "read '#{data_holder.title}'"
+
+      file_path = File.expand_path('~/.config/rough_diary/rough_buffer.txt')
+      file = File.open(file_path, 'w') {|f| f.puts data_holder.content }
+      system("#{configatron.simple_ui.pager} #{file_path}")
     end
   end
 end
