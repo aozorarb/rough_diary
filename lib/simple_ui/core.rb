@@ -2,9 +2,11 @@ require 'rough_diary'
 require 'configatron'
 require_relative 'editor'
 require_relative 'pager'
+require_relative 'parser'
 
 module SimpleUi
   VERSION = '0.1.0'
+
 
   class Core
     def initialize
@@ -88,12 +90,23 @@ module SimpleUi
     end
 
 
-    def info
+    def system_info
       msg = <<~MSG
         rough_diary version: #{RoughDiary::VERSION}
         simple_ui version:   #{SimpleUi::VERSION}
         config path:         #{@config_path}
         database path:       #{configatron.system.database_path}
+      MSG
+      puts msg
+    end
+
+
+    def help
+      msg = <<~MSG
+        write - write new diary
+        list  - show diaries list with id
+        show id - show diary specified by id
+        edit id - edit diary specified by id
       MSG
       puts msg
     end
