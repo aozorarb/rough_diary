@@ -1,8 +1,11 @@
 require 'rough_diary'
 require 'configatron'
 require_relative 'editor'
+require_relative 'pager'
 
 module SimpleUi
+  VERSION = '0.1.0'
+
   class Core
     def initialize
       @config_path = File.expand_path('~/.config/rough_diary/config.yml')
@@ -17,6 +20,7 @@ module SimpleUi
       configatron.system.database_path = File.expand_path('~/.config/rough_diary/default_diary.sqlite3')
       configatron.simple_ui.editor = 'vim'
       configatron.simple_ui.pager = 'view'
+      configatron.simple_ui.buffer_path = File.expand_path('~/.config/rough_diary/system_buffer.txt')
 
       unless File.exist?(@config_path)
         warn "Error: config(#{@config_path}) is not exist. Use default"
@@ -68,7 +72,7 @@ module SimpleUi
     end
 
 
-    def read(id: nil)
+    def show(id: nil)
       if id.nil?
         print 'Enter diary\'s id: '
         id = gets.to_i
@@ -79,12 +83,21 @@ module SimpleUi
         puts "diary id: #{id} is not found."
         exit 1
       end
-      puts "read '#{data_holder.title}'"
-
-      file_path = File.expand_path('~/.config/rough_diary/rough_buffer.txt')
-      file = File.open(file_path, 'w') {|f| f.puts data_holder.content }
-      system("#{configatron.simple_ui.pager} #{file_path}")
+      pager = SimpleUi::Pager.new
+      pager.show(data_holder)
     end
+
+
+    def info
+      msg = <<~MSG
+        rough_diary version: #{RoughDiary::VERSION}
+        simple_ui version:   #{SimpleUi::VERSION}
+        config path:         #{@config_path}
+        database path:       #{configatron.system.database_path}
+      MSG
+      puts msg
+    end
+
   end
 end
 
