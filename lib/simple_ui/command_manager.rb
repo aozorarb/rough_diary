@@ -29,13 +29,13 @@ module SimpleUi
     
     def process_args(args)
       if args.empty?
-        SimpleUi::Commands::Help.execute
+        SimpleUi::Commands::Help.help
         exit 0
       end
 
       case args.first
       when '-h', '--help'
-        SimpleUi::Commands::Help.execute
+        SimpleUi::Commands::Help.help
         exit 0
       when '-v', '--version'
         puts "RoughDiary: #{RoughDiary::VERSION}"

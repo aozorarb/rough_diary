@@ -115,18 +115,29 @@ module SimpleUi
 
 
   class Help < Command
+    HELP_MESSAGE =<<~MSG
+      RoughDiary is a diary writer/pager without care.
+      Usage:
+        diary [subcommand]
+
+      subcommands:
+        write     write new diary
+        list      show diaries list with id
+        show      show diary specified by id
+        edit      edit diary specified by id
+    MSG
+
     def initialize
       super 'help', 'Show help'
     end
 
-    def execute
-      msg = <<~MSG
-        write - write new diary
-        list  - show diaries list with id
-        show id - show diary specified by id
-        edit id - edit diary specified by id
-      MSG
-      puts msg
+    def self.help
+      puts HELP_MESSAGE
     end
+
+    def execute
+      puts HELP_MESSAGE
+    end
+
   end
 end
