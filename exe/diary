@@ -3,7 +3,6 @@ require 'rough_diary'
 require 'simple_ui'
 
 core = SimpleUi::Core.new
-
-core.write
+core.run(ARGV)
 
 exit 0

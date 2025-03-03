@@ -2,7 +2,7 @@
 
 A diary writer/reader without care.
 [x] Writer
-[ ] Reader/Pager
+[x] Pager
 
 DEVELOPING
 

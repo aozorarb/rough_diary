@@ -3,7 +3,7 @@ require 'configatron'
 require_relative 'command_manager'
 
 module SimpleUi
-  VERSION = '0.1.0'
+  VERSION = '0.1.1'
 
 
   class Core
