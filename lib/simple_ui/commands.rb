@@ -58,7 +58,7 @@ module SimpleUi
         editor = Editor.new
         content_generator = RoughDiary::ContentGenerator.new(data_holder, editor)
 
-        content_generator.execute
+        content_generator.run
         db_manager.register(data_holder)
       end
     end
@@ -138,7 +138,7 @@ module SimpleUi
       editor = SimpleUi::Editor.new
       content_generator = RoughDiary::ContentGenerator.new(data_holder, editor)
 
-      content_generator.execute(need_title: false)
+      content_generator.run(need_title: false)
       db_manager.update(data_holder)
     end
 

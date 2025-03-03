@@ -81,7 +81,6 @@ module RoughDiary
 
     private def update_diary_entries(data_holder)
       data = data_holder.database_format
-      binding.break
       sql = <<~SQL
         UPDATE diary_entries
         SET update_date = "#{data.update_date}", content = "#{data.content}"
