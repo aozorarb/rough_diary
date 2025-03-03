@@ -1,8 +1,6 @@
 require 'rough_diary'
 require 'configatron'
-require_relative 'editor'
-require_relative 'pager'
-require_relative 'parser'
+require_relative 'command_manager'
 
 module SimpleUi
   VERSION = '0.1.0'
@@ -12,8 +10,6 @@ module SimpleUi
     def initialize
       @config_path = File.expand_path('~/.config/rough_diary/config.yml')
       define_config
-
-      @db_manager = RoughDiary::DatabaseManager.new(configatron.system.database_path)
     end
 
 
@@ -34,59 +30,9 @@ module SimpleUi
     end
 
 
-    def write
-      data_holder = RoughDiary::DataHolder.new
-      editor = SimpleUi::Editor.new
-      content_generator = RoughDiary::ContentGenerator.new(data_holder, editor)
-
-      content_generator.run
-      @db_manager.register(data_holder)
-    end
-
-
-    def list(limit: 10, order_by: 'create_date')
-      diaries = @db_manager.execute("SELECT * FROM diary_entries ORDER BY #{order_by} LIMIT #{limit}")
-      diaries.each do |diary|
-        str = "#{diary['title']} (#{diary['id']})"
-        puts str
-      end
-    end
-
-
-    def edit(id: nil)
-      if id.nil?
-        print 'Enter diary\'s id: '
-        id = gets.to_i
-      end
-
-      data_holder = @db_manager.collect_diary_by_id(id)
-      if data_holder.nil?
-        puts "diary id: #{id} is not found"
-        exit 1
-      end
-      puts "edit '#{data_holder.title}'"
-
-      editor = SimpleUi::Editor.new
-      content_generator = RoughDiary::ContentGenerator.new(data_holder, editor)
-
-      content_generator.run(need_title: false)
-      @db_manager.update(data_holder)
-    end
-
-
-    def show(id: nil)
-      if id.nil?
-        print 'Enter diary\'s id: '
-        id = gets.to_i
-      end
-
-      data_holder = @db_manager.collect_diary_by_id(id)
-      if data_holder.nil?
-        puts "diary id: #{id} is not found."
-        exit 1
-      end
-      pager = SimpleUi::Pager.new
-      pager.show(data_holder)
+    def run(args)
+      command_manager = SimpleUi::CommandManager.new
+      command_manager.run args
     end
 
 
@@ -100,16 +46,6 @@ module SimpleUi
       puts msg
     end
 
-
-    def help
-      msg = <<~MSG
-        write - write new diary
-        list  - show diaries list with id
-        show id - show diary specified by id
-        edit id - edit diary specified by id
-      MSG
-      puts msg
-    end
 
   end
 end
