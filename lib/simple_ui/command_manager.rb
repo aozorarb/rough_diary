@@ -44,7 +44,7 @@ module SimpleUi
         puts "Invalid option: #{args.first}. See 'diary --help'"
         exit 1
       else
-        invoke_command(args)
+        invoke_command args
       end
     end
 
@@ -53,7 +53,7 @@ module SimpleUi
       cmd_name = args.shift.downcase
       cmd = estimate_command(cmd_name)
       exit 1 unless cmd
-      cmd.execute
+      cmd.invoke args
     end
 
 

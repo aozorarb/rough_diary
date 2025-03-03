@@ -13,6 +13,32 @@ module SimpleUi
     def execute
       raise NotImplementedError
     end
+
+    def parse_options(args)
+      @options = {}
+      until args.empty?
+        key = args.shift
+        val = args.first
+        if key.start_with?('--')
+          # option without value
+          key = key[2..].to_sym
+          if val.start_with?('--') || val.nil?
+            @options[key] = true
+          else
+            @options[key] = val
+            args.shift
+          end
+        else
+          puts "Invalid option format: #{args.join(' ')}"
+          exit 1
+        end
+      end
+    end
+
+    def invoke(args)
+      parse_options(args)
+      execute
+    end
   end
 
 
@@ -46,8 +72,9 @@ module SimpleUi
       super 'show', 'Show diary specified by id'
     end
 
-    def execute(id: nil)
+    def execute
       db_manager = RoughDiary::DatabaseManager.new(configatron.system.database_path)
+      id = @options[:id]
 
       if id.nil?
         print 'Enter diary\'s id: '
@@ -71,7 +98,10 @@ module SimpleUi
       super 'list', 'show diaryes list with id'
     end
 
-    def execute(limit: 10, order_by: 'create_date')
+    def execute
+      limit = @options[:limit] || 10
+      order_by = @options[:order_by] || 'create_date'
+
       db_manager = RoughDiary::DatabaseManager.new(configatron.system.database_path)
       diaries = db_manager.execute("SELECT * FROM diary_entries ORDER BY #{order_by} LIMIT #{limit}")
       diaries.each do |diary|
@@ -89,8 +119,10 @@ module SimpleUi
       super 'edit', 'Edit diary specified by id'
     end
 
-    def execute(id: nil)
+    def execute
       db_manager = RoughDiary::DatabaseManager.new(configatron.system.database_path)
+      id = @options[:id]
+
       if id.nil?
         print 'Enter diary\'s id: '
         id = gets.to_i
@@ -139,5 +171,14 @@ module SimpleUi
       puts HELP_MESSAGE
     end
 
+    def system
+      msg = <<~MSG
+        rough_diary version: #{RoughDiary::VERSION}
+        simple_ui version:   #{SimpleUi::VERSION}
+        config path:         #{@config_path}
+        database path:       #{configatron.system.database_path}
+      MSG
+      puts msg
+    end
   end
 end
