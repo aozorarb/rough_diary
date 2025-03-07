@@ -63,5 +63,6 @@ module SimpleUi
       execute
     end
   end
+end
 
-module Commands; end
+module SimpleUi::Commands; end

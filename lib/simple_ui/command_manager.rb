@@ -1,4 +1,4 @@
-require_relative 'commands'
+require_relative 'command'
 
 module SimpleUi
   class CommandManager
@@ -67,6 +67,7 @@ module SimpleUi
     private def instantiate(command_name)
       command_name = command_name.to_s
       class_name = command_name.capitalize
+      require "simple_ui/commands/#{command_name}"
       SimpleUi::Commands.const_get(class_name).new
     end
 
