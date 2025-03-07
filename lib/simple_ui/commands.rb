@@ -14,6 +14,7 @@ module SimpleUi
     attr_reader :command, :summary
 
     def execute
+      binding.break
       raise NotImplementedError
     end
 
@@ -67,14 +68,13 @@ module SimpleUi
 
 
   module Commands
-    include SimpleUi
 
-    class Write < Command
+    class Write < SimpleUi::Command
       def initialize
         require_relative 'editor'
         super 'write', 'write new diary'
       end
-        
+
       def usage
         'diary write'
       end
@@ -89,115 +89,115 @@ module SimpleUi
         db_manager.register(data_holder)
       end
     end
-  end
 
 
 
-  class Show < Command
-    def initialize
-      require_relative 'pager'
-      super 'show', 'Show diary specified by id', [:id]
-    end
+    class Show < SimpleUi::Command
+      def initialize
+        require_relative 'pager'
+        super 'show', 'Show diary specified by id', [:id]
+      end
 
-    def usage
-      'diary show ID'
-    end
+      def usage
+        'diary show ID'
+      end
 
 
-    end
-    def execute
-      db_manager = RoughDiary::DatabaseManager.new(configatron.system.database_path)
-      id = @args[:id]
+      def execute
+        db_manager = RoughDiary::DatabaseManager.new(configatron.system.database_path)
+        id = @args[:id]
 
-      if id.nil?
-        print 'Enter diary\'s id: '
-        inp = gets.chomp
-        if /\D/.match?(inp)
-          puts "#{inp} is not a number"
+        if id.nil?
+          print 'Enter diary\'s id: '
+          inp = gets.chomp
+          if /\D/.match?(inp)
+            puts "#{inp} is not a number"
+            return
+          end
+          id = inp.to_i
+        end
+
+        data_holder = db_manager.collect_diary_by_id(id)
+        if data_holder.nil?
+          warn "diary id(#{id}) is not found."
           return
         end
-        id = inp.to_i
-      end
-
-      data_holder = db_manager.collect_diary_by_id(id)
-      if data_holder.nil?
-        warn "diary id: #{id} is not found."
-        return
-      end
-      pager = SimpleUi::Pager.new
-      pager.show(data_holder)
-    end
-  end
-
-
-
-  class List < Command
-    def initialize
-      super 'list', 'show diaryes list with id'
-    end
-
-    def usage
-      'diary list'
-    end
-
-
-    def execute
-      limit = @options[:limit] || 10
-      order_by = @options[:order_by] || 'create_date'
-
-      db_manager = RoughDiary::DatabaseManager.new(configatron.system.database_path)
-      diaries = db_manager.execute("SELECT * FROM diary_entries ORDER BY #{order_by} LIMIT #{limit}")
-      diaries.each do |diary|
-        str = "#{diary['title']} (#{diary['id']})"
-        puts str
+        pager = SimpleUi::Pager.new
+        pager.show(data_holder)
       end
     end
-  end
 
 
 
-  class Edit < Command
-    def initialize
-      require_relative 'editor'
-      super 'edit', 'Edit diary specified by id', [:id]
+    class List < SimpleUi::Command
+      def initialize
+        super 'list', 'show diaryes list with id'
+      end
+
+      def usage
+        'diary list'
+      end
+
+
+      def execute
+        limit = @options[:limit] || 10
+        order_by = @options[:order_by] || 'create_date'
+
+        db_manager = RoughDiary::DatabaseManager.new(configatron.system.database_path)
+        diaries = db_manager.execute("SELECT * FROM diary_entries ORDER BY #{order_by} LIMIT #{limit}")
+        diaries.each do |diary|
+          str = "#{diary['title']} (#{diary['id']})"
+          puts str
+        end
+      end
     end
 
-    def usage
-      'diary edit ID'
-    def execute
-      db_manager = RoughDiary::DatabaseManager.new(configatron.system.database_path)
-      id = @args[:id]
 
-      if id.nil?
-        print 'Enter diary\'s id: '
-        inp = gets.chomp
-        if /\D/.match?(inp)
-          puts "#{inp} is not a number"
+
+    class Edit < SimpleUi::Command
+      def initialize
+        require_relative 'editor'
+        super 'edit', 'Edit diary specified by id', [:id]
+      end
+
+      def usage
+        'diary edit Edit-diary-id'
+      end
+
+      def execute
+        db_manager = RoughDiary::DatabaseManager.new(configatron.system.database_path)
+        id = @args[:id]
+
+        if id.nil?
+          print 'Enter diary\'s id: '
+          inp = gets.chomp
+          if /\D/.match?(inp)
+            puts "#{inp} is not a number"
+            return
+          end
+          id = inp.to_i
+        end
+
+        data_holder = db_manager.collect_diary_by_id(id)
+        if data_holder.nil?
+          puts "diary id: #{id} is not found"
           return
         end
-        id = inp.to_i
+        puts "edit '#{data_holder.title}'"
+
+        editor = SimpleUi::Editor.new
+        content_generator = RoughDiary::ContentGenerator.new(data_holder, editor)
+
+        content_generator.run(need_title: false)
+        db_manager.update(data_holder)
       end
 
-      data_holder = db_manager.collect_diary_by_id(id)
-      if data_holder.nil?
-        puts "diary id: #{id} is not found"
-        return
-      end
-      puts "edit '#{data_holder.title}'"
-
-      editor = SimpleUi::Editor.new
-      content_generator = RoughDiary::ContentGenerator.new(data_holder, editor)
-
-      content_generator.run(need_title: false)
-      db_manager.update(data_holder)
     end
 
-  end
 
 
-
-  class Help < Command
-    HELP_MESSAGE =<<~MSG
+    class Help < SimpleUi::Command
+      HELP_MESSAGE =<<~MSG
       RoughDiary is a diary writer/pager without care.
       Usage:
         diary [subcommand]
@@ -207,28 +207,30 @@ module SimpleUi
         list      show diaries list with id
         show      show diary specified by id
         edit      edit diary specified by id
-    MSG
+      MSG
 
-    def initialize
-      super 'help', 'Show help'
-    end
+      def initialize
+        super 'help', 'Show help'
+      end
 
-    def self.help
-      puts HELP_MESSAGE
-    end
+      def self.help
+        puts HELP_MESSAGE
+      end
 
-    def execute
-      puts HELP_MESSAGE
-    end
+      def execute
+        puts HELP_MESSAGE
+      end
 
-    def system
-      msg = <<~MSG
+      def system
+        msg = <<~MSG
         rough_diary version: #{RoughDiary::VERSION}
         simple_ui version:   #{SimpleUi::VERSION}
         config path:         #{@config_path}
         database path:       #{configatron.system.database_path}
-      MSG
-      puts msg
+        MSG
+        puts msg
+      end
     end
   end
+
 end
