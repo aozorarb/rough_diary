@@ -3,9 +3,12 @@ require 'configatron'
 
 module SimpleUi
   class Command
-    def initialize(command, summary=nil)
+    def initialize(command, summary, need_args=[])
       @command = command
       @summary = summary
+      @need_args = need_args
+      @args = {}
+      @options = {}
     end
 
     attr_reader :command, :summary
@@ -14,29 +17,49 @@ module SimpleUi
       raise NotImplementedError
     end
 
+    def usage
+      @summary
+    end
+
+    def parse_arguments(args)
+      if !@need_args.empty? && args.empty?
+        usage
+        return
+      end
+
+      @need_args.each do |name|
+        if args.first.start_with?('--')
+          usage
+        else
+          @args[name] = args.pop
+        end
+      end
+      parse_options(args)
+    end
+
+
     def parse_options(args)
-      @options = {}
       until args.empty?
         key = args.shift
         val = args.first
         if key.start_with?('--')
           # option without value
           key = key[2..].to_sym
-          if val.start_with?('--') || val.nil?
+          if val.nil? || val.start_with?('--') 
             @options[key] = true
           else
             @options[key] = val
             args.shift
           end
         else
-          puts "Invalid option format: #{args.join(' ')}"
+          warn "Invalid option format: #{args.join(' ')}"
           exit 1
         end
       end
     end
 
     def invoke(args)
-      parse_options(args)
+      parse_arguments args 
       execute
     end
   end
@@ -52,6 +75,10 @@ module SimpleUi
         super 'write', 'write new diary'
       end
         
+      def usage
+        'diary write'
+      end
+
       def execute
         db_manager = RoughDiary::DatabaseManager.new(configatron.system.database_path)
         data_holder = RoughDiary::DataHolder.new
@@ -69,22 +96,33 @@ module SimpleUi
   class Show < Command
     def initialize
       require_relative 'pager'
-      super 'show', 'Show diary specified by id'
+      super 'show', 'Show diary specified by id', [:id]
     end
 
+    def usage
+      'diary show ID'
+    end
+
+
+    end
     def execute
       db_manager = RoughDiary::DatabaseManager.new(configatron.system.database_path)
-      id = @options[:id]
+      id = @args[:id]
 
       if id.nil?
         print 'Enter diary\'s id: '
-        id = gets.to_i
+        inp = gets.chomp
+        if /\D/.match?(inp)
+          puts "#{inp} is not a number"
+          return
+        end
+        id = inp.to_i
       end
 
       data_holder = db_manager.collect_diary_by_id(id)
       if data_holder.nil?
-        puts "diary id: #{id} is not found."
-        exit 1
+        warn "diary id: #{id} is not found."
+        return
       end
       pager = SimpleUi::Pager.new
       pager.show(data_holder)
@@ -97,6 +135,11 @@ module SimpleUi
     def initialize
       super 'list', 'show diaryes list with id'
     end
+
+    def usage
+      'diary list'
+    end
+
 
     def execute
       limit = @options[:limit] || 10
@@ -116,22 +159,29 @@ module SimpleUi
   class Edit < Command
     def initialize
       require_relative 'editor'
-      super 'edit', 'Edit diary specified by id'
+      super 'edit', 'Edit diary specified by id', [:id]
     end
 
+    def usage
+      'diary edit ID'
     def execute
       db_manager = RoughDiary::DatabaseManager.new(configatron.system.database_path)
-      id = @options[:id]
+      id = @args[:id]
 
       if id.nil?
         print 'Enter diary\'s id: '
-        id = gets.to_i
+        inp = gets.chomp
+        if /\D/.match?(inp)
+          puts "#{inp} is not a number"
+          return
+        end
+        id = inp.to_i
       end
 
       data_holder = db_manager.collect_diary_by_id(id)
       if data_holder.nil?
         puts "diary id: #{id} is not found"
-        exit 1
+        return
       end
       puts "edit '#{data_holder.title}'"
 
