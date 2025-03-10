@@ -1,20 +1,28 @@
 # RoughDiary
 
 A diary writer/reader without care.
-[x] Writer
-[x] Pager
 
 DEVELOPING
 
 
 ## Installation
 
-DEVELOPING
+```
+git clone git@github.com:aozorarb/rough_diary.git
+# git clone https://github.com/aozorarb/rough_diary.git
+
+cd rough_diary
+gem build
+gem install rough_diary
+```
 
 
 ## Usage
 
-DEVELOPING
+Then installed rough_diary:
+```
+diary help
+```
 
 ## Development
 (keep deafault)
