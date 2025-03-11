@@ -14,13 +14,15 @@ class SimpleUi::Commands::Help < SimpleUi::Command
   MSG
 
   def initialize
-    super 'help', 'Show help', [:cmd_name]
+    super 'help', 'Show help', 'diary help [CMD_NAME]', need_args: [:cmd_name]
     @command_manager = SimpleUi::CommandManager.instance
   end
+
 
   def self.help
     puts HELP_MESSAGE
   end
+
 
   def execute
     if @args[:cmd_name]
@@ -30,15 +32,17 @@ class SimpleUi::Commands::Help < SimpleUi::Command
     end
   end
 
+
   def help_about(cmd_name)
     cmd = @command_manager.estimate_command(cmd_name)
     msg =<<~MSG
-      Command: #{cmd.command}
+      Command: #{cmd.name}
       Usage: #{cmd.usage}
       Summary: #{cmd.summary}
     MSG
     puts msg
   end
+
 
   def system
     msg = <<~MSG

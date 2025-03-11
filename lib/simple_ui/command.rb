@@ -3,22 +3,20 @@ require 'configatron'
 
 module SimpleUi
   class Command
-    def initialize(command, summary, need_args=[])
-      @command = command
+    def initialize(command_name, summary, usage, need_args: [], option_help: '')
+      @name = command_name
       @summary = summary
+      @usage = usage
       @need_args = need_args
+      @option_help = option_help
       @args = {}
       @options = {}
     end
 
-    attr_reader :command, :summary
+    attr_reader :name, :summary, :usage
 
     def execute
       raise NotImplementedError
-    end
-
-    def usage
-      @summary
     end
 
     def parse_arguments(args)

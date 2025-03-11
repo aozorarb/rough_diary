@@ -2,12 +2,9 @@ require_relative '../command'
 require_relative '../editor'
 class SimpleUi::Commands::Edit < SimpleUi::Command
   def initialize
-    super 'edit', 'Edit diary specified by id', [:id]
+    super 'edit', 'Edit diary specified by id', 'diary edit Edit-diary-id', need_args: [:id]
   end
 
-  def usage
-    'diary edit Edit-diary-id'
-  end
 
   def execute
     db_manager = RoughDiary::DatabaseManager.new(configatron.system.database_path)

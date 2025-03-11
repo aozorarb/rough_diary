@@ -2,11 +2,7 @@ require_relative '../command'
 
 class SimpleUi::Commands::List < SimpleUi::Command
   def initialize
-    super 'list', 'show diaryes list with id'
-  end
-
-  def usage
-    'diary list'
+    super 'list', 'show diaryes list with id', 'diary list'
   end
 
 
@@ -19,6 +15,7 @@ class SimpleUi::Commands::List < SimpleUi::Command
     end
     res
   end
+
 
   def execute
     limit = @options[:limit] || 10

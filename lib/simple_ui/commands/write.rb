@@ -3,12 +3,9 @@ require_relative '../editor'
 
 class SimpleUi::Commands::Write < SimpleUi::Command
   def initialize
-    super 'write', 'write new diary'
+    super 'write', 'write new diary', 'diary write'
   end
 
-  def usage
-    'diary write'
-  end
 
   def execute
     db_manager = RoughDiary::DatabaseManager.new(configatron.system.database_path)
