@@ -31,7 +31,7 @@ module SimpleUi
 
 
     def run(args)
-      command_manager = SimpleUi::CommandManager.new
+      command_manager = SimpleUi::CommandManager.instance
       command_manager.run args
     end
 

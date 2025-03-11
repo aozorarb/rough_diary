@@ -1,7 +1,10 @@
+require 'singleton'
 require_relative 'command'
 
 module SimpleUi
+  
   class CommandManager
+    include Singleton
     COMMANDS = [
       :write,
       :list,
@@ -77,7 +80,7 @@ module SimpleUi
     end
 
 
-    private def estimate_command(cmd_name)
+    def estimate_command(cmd_name)
       cmd_name = Regexp.escape(cmd_name)
       matches = command_names.grep(/^#{cmd_name}/)
       if matches.size > 1
