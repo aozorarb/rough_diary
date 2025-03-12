@@ -10,7 +10,7 @@ class SimpleUi::Commands::Write < SimpleUi::Command
   def execute
     db_manager = RoughDiary::DatabaseManager.new(configatron.system.database_path)
     data_holder = RoughDiary::DataHolder.new
-    editor = Editor.new
+    editor = SimpleUi::Editor.new
     content_generator = RoughDiary::ContentGenerator.new(data_holder, editor)
 
     content_generator.run

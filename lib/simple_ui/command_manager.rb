@@ -1,5 +1,6 @@
 require 'singleton'
 require_relative 'command'
+require_relative 'commands/help'
 
 module SimpleUi
   
