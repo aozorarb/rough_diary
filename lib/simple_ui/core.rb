@@ -4,6 +4,7 @@ require_relative 'command_manager'
 
 module SimpleUi
   VERSION = '0.2.1'
+  class CommandError < Exception; end
 
 
   class Core

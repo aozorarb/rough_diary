@@ -25,9 +25,11 @@ module SimpleUi
 
     def run(args)
       process_args(args)
+    rescue SimpleUi::CommandError
+      puts $!
     rescue Interrupt
       puts 'Intrrupted'
-      exit 1
+      exit 0
     end
 
     

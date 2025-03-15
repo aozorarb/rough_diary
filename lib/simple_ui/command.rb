@@ -50,8 +50,7 @@ module SimpleUi
             args.shift
           end
         else
-          warn "Invalid option format: #{args.join(' ')}"
-          exit 1
+          raise SimpleUi::CommandError, "Invalid option format"
         end
       end
     end
