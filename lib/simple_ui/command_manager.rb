@@ -11,6 +11,7 @@ module SimpleUi
       :list,
       :show,
       :edit,
+      :search,
       :help,
     ].freeze
 
@@ -36,19 +37,18 @@ module SimpleUi
     def process_args(args)
       if args.empty?
         SimpleUi::Commands::Help.help
-        exit 0
+        raise SimpleUi::CommandError
       end
 
       case args.first
       when '-h', '--help'
         SimpleUi::Commands::Help.help
-        exit 0
+        raise SimpleUi::CommandError
       when '-v', '--version'
         puts "RoughDiary: #{RoughDiary::VERSION}"
         puts "SimpleUi:   #{SimpleUi::VERSION}"
       when /^-/
-        puts "Invalid option: #{args.first}. See 'diary --help'"
-        exit 1
+        raise SimpleUi::CommandError, "Invalid option: #{args.first}. See 'diary --help'"
       else
         invoke_command args
       end
@@ -58,7 +58,7 @@ module SimpleUi
     def invoke_command(args)
       cmd_name = args.shift.downcase
       cmd = estimate_command(cmd_name)
-      exit 1 unless cmd
+      raise SimpleUi::CommandError unless cmd
       cmd.invoke args
     end
 
@@ -87,11 +87,9 @@ module SimpleUi
       cmd_name = Regexp.escape(cmd_name)
       matches = command_names.grep(/^#{cmd_name}/)
       if matches.size > 1
-        warn "Ambiguous command: #{cmd_name} => [#{matches.join(', ')}]"
-        exit 1
+        raise SimpleUi::CommandError, "Ambiguous command: #{cmd_name} => [#{matches.join(', ')}]"
       elsif matches.empty?
-        warn "Unknown command: #{cmd_name}"
-        exit 1
+        raise SimpleUi::CommandError, "Unknown command: #{cmd_name}"
       end
 
       get(matches.first)
