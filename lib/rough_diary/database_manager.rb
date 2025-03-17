@@ -159,5 +159,14 @@ module RoughDiary
 
       DataHolder.create_from_database(target_diary[0])
     end
+
+
+    def results_as_array
+      raise ArgumentError unless block_given?
+
+      @database.results_as_hash = false
+      yield
+      @database.results_as_hash = true
+    end
   end
 end
