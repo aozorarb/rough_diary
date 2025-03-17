@@ -3,7 +3,9 @@ require_relative '../editor'
 
 class SimpleUi::Commands::Write < SimpleUi::Command
   def initialize
-    super 'write', 'write new diary', 'diary write'
+    super 'write',
+      'write new diary',
+      'diary write'
   end
 
 

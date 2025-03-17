@@ -11,10 +11,14 @@ class SimpleUi::Commands::Help < SimpleUi::Command
       list      show diaries list with id
       show      show diary specified by id
       edit      edit diary specified by id
+      search    search diary by context or tags
   MSG
 
   def initialize
-    super 'help', 'Show help', 'diary help [CMD_NAME]', need_args: [:cmd_name]
+    super 'help',
+      'Show help',
+      'diary help [CMD_NAME]',
+      need_args: [:cmd_name]
     @command_manager = SimpleUi::CommandManager.instance
   end
 

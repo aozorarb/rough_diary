@@ -3,14 +3,13 @@ require 'configatron'
 
 module SimpleUi
   class Command
-    def initialize(command_name, summary, usage, need_args: [], option_help: '')
+    def initialize(command_name, summary, usage, need_args: [], options: {})
       @name = command_name
       @summary = summary
       @usage = usage
       @need_args = need_args
-      @option_help = option_help
+      @options = options
       @args = {}
-      @options = {}
     end
 
     attr_reader :name, :summary, :usage
@@ -19,7 +18,7 @@ module SimpleUi
       raise NotImplementedError
     end
 
-    def parse_arguments(args)
+    private def parse_arguments(args)
       if !@need_args.empty? && args.empty?
         usage
         return
@@ -36,21 +35,25 @@ module SimpleUi
     end
 
 
-    def parse_options(args)
+    # options type 
+    # - :bool: on or off
+    # - :value: need value
+    private def parse_options(args)
       until args.empty?
-        key = args.shift
-        val = args.first
-        if key.start_with?('--')
-          # option without value
-          key = key[2..].to_sym
-          if val.nil? || val.start_with?('--') 
-            @options[key] = true
-          else
-            @options[key] = val
-            args.shift
-          end
+        opt_key = args.shift
+        raise SimpleUi::CommandError, "Invalid option format: #{args}" unless opt_key.satrt_with?('--')
+
+        key = opt_key[2..].to_sym
+        raise SimpleUi::CommandError, "#{@name} does not accept '#{opt_key}' option"
+        raise SimpleUi::CommandError, "'#{key}' option need value" if @options[key][:type] == :value && args.first.nil?
+        case @options[key][:type]
+        when :bool
+          @options[key][:value] = true
+        when :value
+          val = args.shift
+          @options[key][:value] = val
         else
-          raise SimpleUi::CommandError, "Invalid option format"
+          raise ArgumentError, "Invalid accept type: #{key.name}"
         end
       end
     end

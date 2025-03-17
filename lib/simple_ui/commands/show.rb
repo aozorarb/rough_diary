@@ -3,7 +3,10 @@ require_relative '../pager'
 
 class SimpleUi::Commands::Show < SimpleUi::Command
   def initialize
-    super 'show', 'Show diary specified by id', 'diary show ID', need_args: [:id]
+    super 'show',
+      'Show diary specified by id',
+      'diary show ID',
+      need_args: [:id]
   end
 
 

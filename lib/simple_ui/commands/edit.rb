@@ -2,7 +2,11 @@ require_relative '../command'
 require_relative '../editor'
 class SimpleUi::Commands::Edit < SimpleUi::Command
   def initialize
-    super 'edit', 'Edit diary specified by id', 'diary edit Edit-diary-id', need_args: [:id]
+    super 'edit',
+      'Edit diary specified by id',
+      'diary edit Edit-diary-id',
+      need_args: [:id]
+        
   end
 
 
