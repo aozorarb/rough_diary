@@ -3,6 +3,19 @@ require 'configatron'
 
 module SimpleUi
   class Command
+    # == options
+    # hold the command's whole options.
+    #
+    # = keys
+    # name: a option name except double dash prefix '--'
+    #   type:  see below
+    #   value: option's value
+    #   help:  explain what the option does
+    #
+    # = options type 
+    # bool:   on or off
+    # value:  need value
+    
     def initialize(command_name, summary, usage, need_args: [], options: {})
       @name = command_name
       @summary = summary
@@ -31,20 +44,20 @@ module SimpleUi
           @args[name] = args.pop
         end
       end
-      parse_options(args)
     end
 
 
-    # options type 
-    # - :bool: on or off
-    # - :value: need value
     private def parse_options(args)
+      rest_args = []
       until args.empty?
         opt_key = args.shift
-        raise SimpleUi::CommandError, "Invalid option format: #{args}" unless opt_key.satrt_with?('--')
+        unless opt_key.start_with?('--')
+          rest_args << opt_key
+          next
+        end
 
         key = opt_key[2..].to_sym
-        raise SimpleUi::CommandError, "#{@name} does not accept '#{opt_key}' option"
+        raise SimpleUi::CommandError, "#{@name} does not accept '#{opt_key}' option" if @options[key].nil?
         raise SimpleUi::CommandError, "'#{key}' option need value" if @options[key][:type] == :value && args.first.nil?
         case @options[key][:type]
         when :bool
@@ -56,10 +69,11 @@ module SimpleUi
           raise ArgumentError, "Invalid accept type: #{key.name}"
         end
       end
+      parse_arguments rest_args 
     end
 
     def invoke(args)
-      parse_arguments args 
+      parse_options(args)
       execute
     end
   end

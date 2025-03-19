@@ -7,15 +7,21 @@ class SimpleUi::Commands::List < SimpleUi::Command
   def initialize
     super 'list',
       'show diaryes list with id',
-      'diary list'
+      'diary list',
+      options: {
+        limit: {
+          type: :value, value: 10, help: '--limit: Limit max number of diaries to list'
+        },
+        order_by: {
+          type: :value, value: 'create_date DESC', help: '--order_by: condition in SQL ORDER BY statement'
+        }
+      }
   end
 
 
-
-
   def execute
-    limit = @options[:limit] || 10
-    order_by = @options[:order_by] || 'create_date'
+    limit = @options[:limit][:value]
+    order_by = @options[:order_by][:value]
 
     db_manager = RoughDiary::DatabaseManager.new(configatron.system.database_path)
     diaries = nil
