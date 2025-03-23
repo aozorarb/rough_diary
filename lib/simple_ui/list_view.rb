@@ -22,4 +22,5 @@ module SimpleUi::ListView
     end
     ret
   end
+
 end
