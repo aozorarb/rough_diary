@@ -43,7 +43,6 @@ module SimpleUi
       case args.first
       when '-h', '--help'
         SimpleUi::Commands::Help.help
-        raise SimpleUi::CommandError
       when '-v', '--version'
         puts "RoughDiary: #{RoughDiary::VERSION}"
         puts "SimpleUi:   #{SimpleUi::VERSION}"
