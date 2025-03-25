@@ -168,5 +168,27 @@ module RoughDiary
       yield
       @database.results_as_hash = true
     end
+
+
+    # utilities
+    def collect_diaries(order_by: 'create_date DESC', limit: '1000')
+      @database.execute "SELECT * FROM diary_entries ORDER BY #{order_by} LIMIT #{limit}"
+    end
+
+
+    def search_diaries(where, order_by: 'create_date DESC', limit: '1000')
+      @database.execute "SELECT * FROM diary_entries WHERE #{where} ORDER BY #{order_by} LIMIT #{limit}"
+    end
+
+
+    def search_diaries_by_tag(where, limit: '1000')
+      tag_data = search_tags(where, limit: limit)
+      tag_data.map {|data| @database.execute %Q(SELECT * FROM diary_entries WHERE id = "#{data['id']}") }[0]
+    end
+
+
+    def search_tags(where, limit: '1000')
+      @database.execute "SELECT * FROM diary_tags WHERE #{where} ORDER BY tag LIMIT #{limit}"
+    end
   end
 end

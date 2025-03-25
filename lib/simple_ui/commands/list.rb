@@ -24,13 +24,11 @@ class SimpleUi::Commands::List < SimpleUi::Command
     order_by = @options[:order_by][:value]
 
     db_manager = RoughDiary::DatabaseManager.new(configatron.system.database_path)
-    diaries = nil
-    db_manager.results_as_array do
-      diaries = db_manager.execute(
-        "SELECT id, title FROM diary_entries ORDER BY #{order_by} LIMIT #{limit}"
-      )
-    end
-    msg = list_view(' id| title', '%03d| %s', diaries)
+    diaries = @db_manager.collect_diaries(limit: limit, order_by: order_by)
+    columns = []
+    diaries.each {|diary| columns << [diary['id'], diary['title']] }
+
+    msg = list_view(' id| title', '%03d| %s', columns)
     puts msg
   end
 end
