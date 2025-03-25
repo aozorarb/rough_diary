@@ -56,12 +56,12 @@ class DataHolder::Test < Minitest::Test
     assert_in_delta 0, u_diff
 
     # twice 
-    sleep 1 
+    sleep 0.01
     @holder.content = 'Second'
     c2_diff = (@holder.create_date - neary_date)
     u2_diff = (@holder.update_date - neary_date)
     assert_in_delta c_diff, c2_diff
-    assert_in_delta u_diff, u2_diff, delta = 1.01
+    assert_in_delta u_diff, u2_diff, delta = 0.02
   end
 
 end
