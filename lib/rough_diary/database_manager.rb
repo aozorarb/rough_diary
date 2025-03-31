@@ -183,7 +183,7 @@ module RoughDiary
 
     def search_diaries_by_tag(where, limit: '1000')
       tag_data = search_tags(where, limit: limit)
-      tag_data.map {|data| @database.execute %Q(SELECT * FROM diary_entries WHERE id = "#{data['id']}") }[0]
+      tag_data.map {|data| @database.execute %Q(SELECT * FROM diary_entries WHERE id = "#{data['id']}") }.flatten
     end
 
 

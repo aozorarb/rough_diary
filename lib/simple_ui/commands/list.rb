@@ -16,6 +16,7 @@ class SimpleUi::Commands::List < SimpleUi::Command
           type: :value, value: 'create_date DESC', help: '--order_by: condition in SQL ORDER BY statement'
         }
       }
+    @db_manager = RoughDiary::DatabaseManager.new(configatron.system.database_path)
   end
 
 
@@ -23,7 +24,6 @@ class SimpleUi::Commands::List < SimpleUi::Command
     limit = @options[:limit][:value]
     order_by = @options[:order_by][:value]
 
-    db_manager = RoughDiary::DatabaseManager.new(configatron.system.database_path)
     diaries = @db_manager.collect_diaries(limit: limit, order_by: order_by)
     columns = []
     diaries.each {|diary| columns << [diary['id'], diary['title']] }
