@@ -1,4 +1,5 @@
 require 'configatron'
+require 'rough_diary/database_manager'
 
 
 module SimpleUi

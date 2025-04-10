@@ -1,5 +1,6 @@
 require_relative '../command'
 require_relative '../editor'
+
 class SimpleUi::Commands::Edit < SimpleUi::Command
   def initialize
     super 'edit',
