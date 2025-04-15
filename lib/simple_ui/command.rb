@@ -34,13 +34,13 @@ module SimpleUi
 
     private def parse_arguments(args)
       if !@need_args.empty? && args.empty?
-        usage
+        @usage
         return
       end
 
       @need_args.each do |name|
         if args.first.start_with?('--')
-          usage
+          @usage
         else
           @args[name] = args.pop
         end
