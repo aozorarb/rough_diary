@@ -2,7 +2,8 @@
 
 A diary writer/reader without care.
 
-DEVELOPING
+-DEVELOPING- END OF DEVELOPING(NOW)
+If you need to write diary, use other application.
 
 
 ## Installation

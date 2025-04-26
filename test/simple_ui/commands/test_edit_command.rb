@@ -1,5 +1,5 @@
 require_relative '../helper'
 
-class Test < Minitest::Test
+class TestEditCommand < Minitest::Test
 
 end
